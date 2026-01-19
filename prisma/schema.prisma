@@ -1,0 +1,140 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Category {
+  id          String   @id @default(cuid())
+  name        String   // "Smartphones", "Apple", "iPhone"
+  slug        String   @unique
+  description String?
+  icon        String?  // Emoji или icon name
+  parentId    String?  // Для вложенных категорий
+  parent      Category? @relation("CategoryChildren", fields: [parentId], references: [id], onDelete: Cascade)
+  children    Category[] @relation("CategoryChildren")
+  isMegaMenu  Boolean  @default(false) // Для Apple, Dyson
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  products    Product[]
+  
+  @@index([parentId])
+  @@index([slug])
+}
+
+model Product {
+  id            String   @id @default(cuid())
+  brand         String   // "Apple", "Dyson", etc.
+  model         String   // "iPhone 17 Pro Max"
+  slug          String   @unique
+  folderName    String?  // Оригинальное имя папки для поиска изображений
+  categoryId    String
+  category      Category @relation(fields: [categoryId], references: [id])
+  baseDescription String @default("")
+  baseImages    String   // JSON array
+  discount      Float    @default(20.0) // 20% discount
+  basePrice     Float    // MSRP
+  featured      Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  variants      ProductVariant[]
+  orderItems    OrderItem[]
+  favorites     Favorite[]
+  
+  @@index([categoryId])
+  @@index([brand])
+  @@index([slug])
+}
+
+model ProductVariant {
+  id            String   @id @default(cuid())
+  productId     String
+  product       Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  color         String?  // "Orange", "Silver", "Deep Blue"
+  memory        String?  // "256GB", "512GB", "1TB"
+  size          String?  // "16\"", "14\""
+  ram           String?  // "8GB", "16GB"
+  storage       String?  // "256GB", "512GB"
+  priceModifier Float    @default(0.0) // Дополнительная цена к basePrice
+  images        String   // JSON array - только для этого варианта
+  stock         Int      @default(0)
+  inStock       Boolean  @default(true)
+  sku           String   @unique
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([productId])
+  @@index([sku])
+}
+
+model User {
+  id          String   @id @default(cuid())
+  email       String   @unique
+  name        String
+  password    String   // Hashed
+  phone       String?  // Номер телефона
+  address     String?  // Адрес (JSON: street, city, postalCode, country)
+  dateOfBirth String?  // Дата рождения (ISO string)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  orders    Order[]
+  favorites Favorite[]
+  
+  @@index([email])
+}
+
+model Order {
+  id             String      @id @default(cuid())
+  userId         String
+  user           User         @relation(fields: [userId], references: [id])
+  status         String       @default("pending") // pending, processing, shipped, delivered, cancelled
+  total          Float
+  shippingAddress String      // JSON
+  paymentMethod  String
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  
+  items          OrderItem[]
+  
+  @@index([userId])
+}
+
+model OrderItem {
+  id          String   @id @default(cuid())
+  orderId     String
+  order       Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId   String
+  product     Product  @relation(fields: [productId], references: [id])
+  variantId   String
+  variantData String   // JSON snapshot of variant
+  quantity    Int
+  price       Float    // Price at time of order
+  createdAt   DateTime @default(now())
+  
+  @@index([orderId])
+  @@index([productId])
+}
+
+model Favorite {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  
+  @@unique([userId, productId])
+  @@index([userId])
+  @@index([productId])
+}

@@ -1,0 +1,237 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #0d0d0d;
+  --foreground: #ffffff;
+  --card-bg-start: #1a1a1a;
+  --card-bg-end: #1e1e1e;
+  --card-border: rgba(139, 255, 0, 0.1);
+  --neon-green: #8bff00;
+  --neon-green-dark: #6acc00;
+  --neon-green-glow: rgba(139, 255, 0, 0.4);
+  --text-muted: #a0a0a0;
+  --text-dim: #666666;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  position: relative;
+  min-height: 100vh;
+}
+
+/* Текстурный фон: graphite/concrete/noise с градиентами */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  background: 
+    /* Radial gradients для глубины */
+    radial-gradient(circle at 20% 30%, rgba(139, 255, 0, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(139, 255, 0, 0.02) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.3) 0%, transparent 70%),
+    /* Linear gradients для текстуры */
+    linear-gradient(135deg, #0a0a0a 0%, #0d0d0d 25%, #0f0f0f 50%, #0d0d0d 75%, #0a0a0a 100%),
+    /* Noise texture (имитация через градиенты) */
+    repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.1) 0px,
+      transparent 1px,
+      transparent 2px,
+      rgba(0, 0, 0, 0.05) 3px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(0, 0, 0, 0.1) 0px,
+      transparent 1px,
+      transparent 2px,
+      rgba(0, 0, 0, 0.05) 3px
+    ),
+    /* Базовый темный фон */
+    #0d0d0d;
+  background-size: 
+    100% 100%,
+    100% 100%,
+    100% 100%,
+    100% 100%,
+    4px 4px,
+    4px 4px,
+    100% 100%;
+  pointer-events: none;
+}
+
+/* Плавные transitions для всех интерактивных элементов */
+* {
+  transition-property: color, background-color, border-color, box-shadow, transform, opacity;
+  transition-duration: 250ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Убираем transition для некоторых элементов */
+img, svg, video {
+  transition: none;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  /* Neon glow эффекты */
+  .glow-neon {
+    box-shadow: 0 0 10px var(--neon-green-glow), 0 0 20px var(--neon-green-glow);
+  }
+  
+  .glow-neon-hover:hover {
+    box-shadow: 0 0 15px var(--neon-green-glow), 0 0 30px var(--neon-green-glow), 0 0 45px var(--neon-green-glow);
+  }
+  
+  /* Drop shadow для изображений */
+  .drop-shadow-neon {
+    filter: drop-shadow(0 0 8px var(--neon-green-glow));
+  }
+  
+  .drop-shadow-neon-hover:hover {
+    filter: drop-shadow(0 0 12px var(--neon-green-glow)) drop-shadow(0 0 20px var(--neon-green-glow));
+  }
+}
+
+/* Product Description Styles */
+.product-description {
+  color: #e5e5e5;
+  line-height: 1.7;
+}
+
+.product-description h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--neon-green);
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid rgba(139, 255, 0, 0.2);
+  padding-bottom: 0.5rem;
+}
+
+.product-description h2:first-child {
+  margin-top: 0;
+}
+
+.product-description h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--foreground);
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.product-description p {
+  margin-bottom: 1rem;
+  color: #d0d0d0;
+  font-size: 1.05rem;
+}
+
+.product-description ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 1rem 0;
+}
+
+.product-description ul li {
+  padding: 0.5rem 0;
+  padding-left: 1.5rem;
+  position: relative;
+  color: #d0d0d0;
+}
+
+.product-description ul li::before {
+  content: '▸';
+  position: absolute;
+  left: 0;
+  color: var(--neon-green);
+  font-weight: bold;
+}
+
+.product-description ul li strong {
+  color: var(--neon-green);
+  font-weight: 600;
+}
+
+.product-description strong {
+  color: var(--neon-green);
+  font-weight: 600;
+}
+
+/* Кастомный скроллбар под стиль сайта */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--neon-green) transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, var(--neon-green), var(--neon-green-dark));
+  border-radius: 999px;
+  box-shadow: 0 0 8px var(--neon-green-glow);
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--neon-green-dark);
+}
+
+/* Toast notification animation */
+@keyframes slide-up-fade {
+  from {
+    transform: translateY(100px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-up-fade {
+  animation: slide-up-fade 0.3s ease-out;
+}
+
+/* Chat window animation */
+@keyframes slide-in-right {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-in-right {
+  animation: slide-in-right 0.3s ease-out;
+}

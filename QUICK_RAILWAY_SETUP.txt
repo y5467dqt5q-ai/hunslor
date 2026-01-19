@@ -1,0 +1,14 @@
+✅ ВСЕ ГОТОВО К НАСТРОЙКЕ RAILWAY!
+
+Для автоматической настройки через API:
+
+1. Получите токен: https://railway.app/account/tokens
+2. В PowerShell выполните:
+   $env:RAILWAY_API_TOKEN = "ваш-токен"
+   cd C:\hunslor
+   .\setup-railway-api.ps1
+
+Или настройте вручную через Dashboard:
+https://railway.app/project/a6111262-b4c7-468f-97e6-099305db819c
+
+Все инструкции в файле: RAILWAY_SETUP_INSTRUCTIONS.md
