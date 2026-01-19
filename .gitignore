@@ -30,6 +30,8 @@ setup-railway-api.js
 setup-railway-final.ps1
 setup-railway-simple.ps1
 setup-railway.js
+deploy-railway-api.ps1
+deploy-railway-full.ps1
 .env
 .env.local
 

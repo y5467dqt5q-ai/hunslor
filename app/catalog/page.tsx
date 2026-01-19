@@ -29,11 +29,11 @@ async function getFilterOptions() {
     });
 
   const brands = [...new Set(products.map(p => p.brand))].sort();
-  const colors = [...new Set(products.flatMap(p => p.variants.map(v => v.color).filter(Boolean)))].sort();
+  const colors = [...new Set(products.flatMap(p => p.variants.map(v => v.color)))].filter((c): c is string => !!c).sort();
   const memories = [...new Set(products.flatMap(p => 
-    p.variants.flatMap(v => [v.memory, v.storage].filter(Boolean))
-  ))].sort();
-  const sizes = [...new Set(products.flatMap(p => p.variants.map(v => v.size).filter(Boolean)))].sort();
+    p.variants.flatMap(v => [v.memory, v.storage])
+  ))].filter((m): m is string => !!m).sort();
+  const sizes = [...new Set(products.flatMap(p => p.variants.map(v => v.size)))].filter((s): s is string => !!s).sort();
 
   const allPrices = products.flatMap(p => 
     p.variants.map(v => {
