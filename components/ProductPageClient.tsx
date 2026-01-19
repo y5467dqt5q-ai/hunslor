@@ -47,7 +47,7 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
   // Инициализация: выбираем первый доступный вариант
   useEffect(() => {
     if (product.variants.length > 0 && !selectedVariant) {
-      const firstAvailable = product.variants.find(v => v.available) || product.variants[0];
+      const firstAvailable = product.variants.find((v: ProductVariant) => v.available) || product.variants[0];
       if (firstAvailable) {
         setSelectedVariant(firstAvailable);
       }

@@ -94,7 +94,7 @@ export default function VariantSelector({
   const series: ('Pro' | 'Pro Max' | 'Standard' | 'Air')[] = isIPhone && availableSeries.length > 0 ? availableSeries : [];
   // Убираем дубликаты цветов (регистронезависимо)
   const colorMap = new Map<string, string>();
-  variants.forEach(v => {
+  variants.forEach((v: Variant) => {
     if (v.color) {
       const normalized = v.color.toLowerCase().trim();
       if (!colorMap.has(normalized)) {
@@ -273,7 +273,7 @@ export default function VariantSelector({
     // ПРИОРИТЕТ 6: Вариант с выбранной памятью (только если цвет НЕ выбран)
     // Если цвет выбран, но вариант с color+storage не найден - НЕ меняем цвет на другой
     if (selectedStorage && !selectedColor) {
-      const storageMatch = allVariants.find(v => v.storage === selectedStorage);
+      const storageMatch = allVariants.find((v: Variant) => v.storage === selectedStorage);
       if (storageMatch) {
         console.log('✅ Found storage match (no color selected):', storageMatch.id);
         return storageMatch;
@@ -350,11 +350,11 @@ export default function VariantSelector({
         if (displayVariant.storage !== selectedStorage) {
           // Ищем вариант с правильной памятью для получения priceModifier
           // Используем variants (не allVariants), чтобы получить доступ к priceModifier
-          const storageVariant = variants.find(v => 
+          const storageVariant = variants.find((v: Variant) => 
             v.available && 
             v.storage === selectedStorage &&
             (v.color === selectedColor || !selectedColor) // Предпочтительно с выбранным цветом
-          ) || variants.find(v => v.available && v.storage === selectedStorage);
+          ) || variants.find((v: Variant) => v.available && v.storage === selectedStorage);
           
           // Получаем priceModifier из варианта с правильной памятью
           // КРИТИЧНО: Используем полный вариант из variants для доступа к priceModifier
@@ -451,7 +451,7 @@ export default function VariantSelector({
     // Но проверяем, существует ли вариант с выбранными параметрами
     if (type === 'color' && selectedStorage) {
       // Если память выбрана, проверяем существует ли вариант с этим цветом и памятью
-      const exists = variants.some(v => 
+      const exists = variants.some((v: Variant) => 
         v.color === value && 
         v.storage === selectedStorage &&
         v.available
