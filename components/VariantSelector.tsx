@@ -189,7 +189,7 @@ export default function VariantSelector({
     });
 
     // Используем все варианты для поиска, не фильтруем заранее
-    const allVariants = variants.filter(v => v.available);
+    const allVariants = variants.filter((v: Variant) => v.available);
     
     // ПРИОРИТЕТ 1: Ищем точное совпадение - серия + цвет + память
     if (isIPhone && selectedSeries && selectedColor && selectedStorage) {
@@ -208,7 +208,7 @@ export default function VariantSelector({
     // КРИТИЧНО: при изменении памяти сохраняем цвет, при изменении цвета - память
     if (selectedColor && selectedStorage) {
       // Сначала ищем точное совпадение цвета и памяти
-      const colorStorageMatch = allVariants.find(v => 
+      const colorStorageMatch = allVariants.find((v: Variant) => 
         v.color === selectedColor && 
         v.storage === selectedStorage
       );
@@ -219,7 +219,7 @@ export default function VariantSelector({
       
       // Если точное совпадение не найдено, ищем вариант с правильной памятью (для правильного priceModifier)
       // ПРИОРИТЕТ: память важнее для цены, чем цвет
-      const storageMatch = allVariants.find(v => v.storage === selectedStorage);
+      const storageMatch = allVariants.find((v: Variant) => v.storage === selectedStorage);
       if (storageMatch) {
         console.log('✅ Found storage match (fallback), will use selected color:', selectedColor);
         // Вариант с правильной памятью найден, цвет будет заменен в displayVariant
