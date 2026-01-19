@@ -98,7 +98,7 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
           if (images.length > 0) {
             // КРИТИЧНО: Добавляем cache buster к каждому изображению для принудительного обновления
             const cacheBuster = `${Date.now()}_${Math.random().toString(36).substring(7)}`;
-            const imagesWithCacheBuster = images.map(img => {
+            const imagesWithCacheBuster = images.map((img: string) => {
               return img.includes('?') ? `${img}&_cb=${cacheBuster}` : `${img}?_cb=${cacheBuster}`;
             });
             setVariantImages(imagesWithCacheBuster);
