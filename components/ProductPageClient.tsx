@@ -93,31 +93,33 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
 
         if (response.ok) {
           const jsonData: unknown = await response.json();
-          const data = jsonData as ImagesApiResponse;
+          const data = jsonData as { images?: unknown; mainImage?: unknown };
           
-          const images: string[] = (() => {
-            if (data.images && Array.isArray(data.images) && data.images.length > 0) {
-              const imagesArray: unknown[] = data.images;
-              const filtered: string[] = imagesArray.filter((item: unknown): item is string => {
-                return typeof item === 'string' && item.length > 0;
-              });
-              return filtered;
-            }
-            if (data.mainImage && typeof data.mainImage === 'string' && data.mainImage.length > 0) {
-              return [data.mainImage] as string[];
-            }
-            return [] as string[];
-          })();
+          // STRICT TYPE SAFETY IMPLEMENTATION
+          const sourceImages: unknown = data.images;
+          const rawImages: unknown[] = Array.isArray(sourceImages) ? sourceImages : [];
+
+          // Fallback to mainImage if rawImages is empty
+          if (rawImages.length === 0 && typeof data.mainImage === 'string' && data.mainImage.length > 0) {
+            rawImages.push(data.mainImage);
+          }
+
+          const safeImages: string[] = rawImages.filter(
+            (img): img is string => typeof img === 'string' && img.length > 0
+          );
           
-          console.log('✅ Loaded images for variant:', selectedVariant.id, 'images:', images.length);
-          if (images.length > 0) {
+          console.log('✅ Loaded images for variant:', selectedVariant.id, 'images:', safeImages.length);
+          
+          if (safeImages.length > 0) {
             const cacheBuster = `${Date.now()}_${Math.random().toString(36).substring(7)}`;
-            const imagesWithCacheBuster: string[] = images.map((img: string): string => {
-              if (typeof img !== 'string' || img.length === 0) {
-                return '';
-              }
-              return img.includes('?') ? `${img}&_cb=${cacheBuster}` : `${img}?_cb=${cacheBuster}`;
-            }).filter((url: string): url is string => url.length > 0);
+            
+            const imagesWithCacheBuster: string[] = safeImages.map(
+              (img: string): string => 
+                img.includes('?') 
+                  ? `${img}&_cb=${cacheBuster}` 
+                  : `${img}?_cb=${cacheBuster}` 
+            );
+            
             setVariantImages(imagesWithCacheBuster);
             setCurrentImageIndex(0);
           } else {
