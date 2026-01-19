@@ -98,16 +98,18 @@ export default async function ProductPage({ params }: PageProps) {
     let images: string[] = [];
     try {
       if (variant.images) {
-        const parsed = JSON.parse(variant.images);
+        const parsed: unknown = JSON.parse(variant.images);
         if (Array.isArray(parsed)) {
-          images = parsed;
-        } else if (typeof parsed === 'string') {
+          images = parsed.filter((item: unknown): item is string => {
+            return typeof item === 'string' && item.length > 0;
+          });
+        } else if (typeof parsed === 'string' && parsed.length > 0) {
           images = [parsed];
         }
       }
     } catch (e) {
       // Если не JSON, пробуем как строку
-      if (typeof variant.images === 'string') {
+      if (typeof variant.images === 'string' && variant.images.length > 0) {
         images = [variant.images];
       }
     }
