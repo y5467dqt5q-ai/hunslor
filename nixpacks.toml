@@ -8,7 +8,7 @@ cmds = ["npm ci"]
 cmds = ["npm run build"]
 
 [phases.postbuild]
-cmds = ["npx prisma db push || true"]
+cmds = ["npx prisma db push || echo 'DB push completed or skipped'"]
 
 [start]
 cmd = "npm start"
