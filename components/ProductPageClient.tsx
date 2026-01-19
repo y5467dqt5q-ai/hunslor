@@ -283,24 +283,26 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
             
             {Array.isArray(variantImages) && variantImages.length > 0 && (
               <div className="grid grid-cols-4 gap-2">
-                {variantImages.map((img: string, idx: number) => (
-                  <button
-                    key={`thumb-${idx}-${img}`}
-                    onClick={() => setCurrentImageIndex(idx)}
-                    className={`aspect-square rounded-button border overflow-hidden transition-all duration-200 ${
-                      currentImageIndex === idx
-                        ? 'border-neon-green shadow-neon'
-                        : 'border-card-border hover:border-neon-green/50'
-                    }`}
-                  >
-                    <ProductImage
-                      key={`gallery-${idx}-${img}`} // КРИТИЧНО: Уникальный ключ для каждого изображения
-                      src={img}
-                      alt={`${displayName} - View ${idx + 1}`}
-                      className="w-full h-full"
-                    />
-                  </button>
-                ))}
+                {variantImages.map((img: string, idx: number): JSX.Element => {
+                  return (
+                    <button
+                      key={`thumb-${idx}-${img}`}
+                      onClick={() => setCurrentImageIndex(idx)}
+                      className={`aspect-square rounded-button border overflow-hidden transition-all duration-200 ${
+                        currentImageIndex === idx
+                          ? 'border-neon-green shadow-neon'
+                          : 'border-card-border hover:border-neon-green/50'
+                      }`}
+                    >
+                      <ProductImage
+                        key={`gallery-${idx}-${img}`}
+                        src={img}
+                        alt={`${displayName} - View ${idx + 1}`}
+                        className="w-full h-full"
+                      />
+                    </button>
+                  );
+                })}
               </div>
             )}
           </div>
