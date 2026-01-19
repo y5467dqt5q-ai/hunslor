@@ -87,10 +87,10 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
         });
 
         if (response.ok) {
-          const data = await response.json();
-          const images = data.images && Array.isArray(data.images) && data.images.length > 0
-            ? data.images
-            : data.mainImage
+          const data = await response.json() as { images?: string[]; mainImage?: string };
+          const images: string[] = data.images && Array.isArray(data.images) && data.images.length > 0
+            ? (data.images as string[])
+            : data.mainImage && typeof data.mainImage === 'string'
             ? [data.mainImage]
             : [];
           
@@ -98,7 +98,7 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
           if (images.length > 0) {
             // КРИТИЧНО: Добавляем cache buster к каждому изображению для принудительного обновления
             const cacheBuster = `${Date.now()}_${Math.random().toString(36).substring(7)}`;
-            const imagesWithCacheBuster = images.map((img: string) => {
+            const imagesWithCacheBuster: string[] = images.map((img: string) => {
               return img.includes('?') ? `${img}&_cb=${cacheBuster}` : `${img}?_cb=${cacheBuster}`;
             });
             setVariantImages(imagesWithCacheBuster);
