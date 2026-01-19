@@ -97,13 +97,14 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
           
           const images: string[] = (() => {
             if (data.images && Array.isArray(data.images) && data.images.length > 0) {
-              const filtered: string[] = data.images.filter((item: unknown): item is string => {
+              const imagesArray: unknown[] = data.images;
+              const filtered: string[] = imagesArray.filter((item: unknown): item is string => {
                 return typeof item === 'string' && item.length > 0;
               });
               return filtered;
             }
             if (data.mainImage && typeof data.mainImage === 'string' && data.mainImage.length > 0) {
-              return [data.mainImage];
+              return [data.mainImage] as string[];
             }
             return [] as string[];
           })();
