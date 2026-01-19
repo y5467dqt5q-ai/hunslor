@@ -38,6 +38,11 @@ interface ProductPageClientProps {
   product: Product;
 }
 
+interface ImagesApiResponse {
+  images?: string[];
+  mainImage?: string;
+}
+
 export default function ProductPageClient({ product }: ProductPageClientProps) {
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(null);
   const [variantImages, setVariantImages] = useState<string[]>([]);
@@ -87,23 +92,31 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
         });
 
         if (response.ok) {
-          const data: { images?: string[]; mainImage?: string } = await response.json();
+          const jsonData: unknown = await response.json();
+          const data = jsonData as ImagesApiResponse;
+          
           const images: string[] = (() => {
             if (data.images && Array.isArray(data.images) && data.images.length > 0) {
-              return data.images.filter((item): item is string => typeof item === 'string');
+              const filtered: string[] = data.images.filter((item: unknown): item is string => {
+                return typeof item === 'string' && item.length > 0;
+              });
+              return filtered;
             }
-            if (data.mainImage && typeof data.mainImage === 'string') {
+            if (data.mainImage && typeof data.mainImage === 'string' && data.mainImage.length > 0) {
               return [data.mainImage];
             }
-            return [];
+            return [] as string[];
           })();
           
           console.log('✅ Loaded images for variant:', selectedVariant.id, 'images:', images.length);
           if (images.length > 0) {
             const cacheBuster = `${Date.now()}_${Math.random().toString(36).substring(7)}`;
             const imagesWithCacheBuster: string[] = images.map((img: string): string => {
+              if (typeof img !== 'string' || img.length === 0) {
+                return '';
+              }
               return img.includes('?') ? `${img}&_cb=${cacheBuster}` : `${img}?_cb=${cacheBuster}`;
-            });
+            }).filter((url: string): url is string => url.length > 0);
             setVariantImages(imagesWithCacheBuster);
             setCurrentImageIndex(0);
           } else {
