@@ -25,7 +25,7 @@ export async function GET(
     console.log('Base path exists:', fs.existsSync(CATEGORY_ICONS_BASE_PATH));
     
     // Декодируем каждый сегмент пути
-    const decodedPath = params.path.map(segment => {
+    const decodedPath = params.path.map((segment: string) => {
       try {
         return decodeURIComponent(segment);
       } catch (e) {
@@ -55,8 +55,8 @@ export async function GET(
       console.log('⚠️ Path does not exist, searching for folder...');
       if (fs.existsSync(CATEGORY_ICONS_BASE_PATH)) {
         const folders = fs.readdirSync(CATEGORY_ICONS_BASE_PATH, { withFileTypes: true })
-          .filter(item => item.isDirectory())
-          .map(item => item.name);
+          .filter((item) => item.isDirectory())
+          .map((item) => item.name);
         
         console.log('📂 Available folders:', folders);
         
@@ -85,8 +85,8 @@ export async function GET(
     if (foundFolder && fs.existsSync(folderPath)) {
       console.log('🔍 Searching for images in folder:', folderPath);
       const files = fs.readdirSync(folderPath, { withFileTypes: true })
-        .filter(file => file.isFile())
-        .map(file => file.name)
+        .filter((file) => file.isFile())
+        .map((file) => file.name)
         .filter(fileName => {
           const ext = path.extname(fileName).toLowerCase();
           return ['.jpg', '.jpeg', '.png', '.webp', '.gif', '.svg'].includes(ext);

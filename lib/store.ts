@@ -36,10 +36,10 @@ export const useCartStore = create<CartStore>()(
       addItem: (item) => {
         const id = `${item.productId}-${item.variantId}`
         const currentItems = get().items
-        const existing = currentItems.find(i => i.id === id)
+        const existing = currentItems.find((i: CartItem) => i.id === id)
         
         if (existing) {
-          const updatedItems = currentItems.map(i =>
+          const updatedItems = currentItems.map((i: CartItem) =>
             i.id === id ? { ...i, quantity: i.quantity + item.quantity } : i
           )
           set({ items: updatedItems })
@@ -48,14 +48,14 @@ export const useCartStore = create<CartStore>()(
         }
       },
       removeItem: (itemId) => {
-        set({ items: get().items.filter(i => i.id !== itemId) })
+        set({ items: get().items.filter((i: CartItem) => i.id !== itemId) })
       },
       updateQuantity: (itemId, quantity) => {
         if (quantity <= 0) {
           get().removeItem(itemId)
         } else {
           set({
-            items: get().items.map(i =>
+            items: get().items.map((i: CartItem) =>
               i.id === itemId ? { ...i, quantity } : i
             )
           })
@@ -63,10 +63,10 @@ export const useCartStore = create<CartStore>()(
       },
       clearCart: () => set({ items: [] }),
       getTotal: () => {
-        return get().items.reduce((sum, item) => sum + item.price * item.quantity, 0)
+        return get().items.reduce((sum: number, item: CartItem) => sum + item.price * item.quantity, 0)
       },
       getItemCount: () => {
-        return get().items.reduce((sum, item) => sum + item.quantity, 0)
+        return get().items.reduce((sum: number, item: CartItem) => sum + item.quantity, 0)
       },
     }),
     {
@@ -121,7 +121,7 @@ export const useFavoriteStore = create<FavoriteStore>()(
         const favorites = get().favorites
         set({
           favorites: favorites.includes(productId)
-            ? favorites.filter(id => id !== productId)
+            ? favorites.filter((id: string) => id !== productId)
             : [...favorites, productId]
         })
       },
@@ -161,13 +161,13 @@ export const useToastStore = create<ToastStore>((set, get) => ({
     setTimeout(() => {
       const currentToasts = get().toasts
       set({
-        toasts: currentToasts.filter(t => t.id !== id)
+        toasts: currentToasts.filter((t: Toast) => t.id !== id)
       })
     }, 3000)
   },
   removeToast: (id: string) => {
     set({
-      toasts: get().toasts.filter(t => t.id !== id)
+      toasts: get().toasts.filter((t: Toast) => t.id !== id)
     })
   },
 }))

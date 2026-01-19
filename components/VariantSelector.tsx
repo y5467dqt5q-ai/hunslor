@@ -90,7 +90,7 @@ export default function VariantSelector({
   const hideMemoryOnly = isDyson; // Только память, цвета показываем
   
   // Определяем доступные серии из вариантов
-  const availableSeries = Array.from(new Set(variants.map(v => v.model))) as ('Pro' | 'Pro Max' | 'Standard' | 'Air')[];
+  const availableSeries = Array.from(new Set(variants.map((v: Variant) => v.model))) as ('Pro' | 'Pro Max' | 'Standard' | 'Air')[];
   const series: ('Pro' | 'Pro Max' | 'Standard' | 'Air')[] = isIPhone && availableSeries.length > 0 ? availableSeries : [];
   // Убираем дубликаты цветов (регистронезависимо)
   const colorMap = new Map<string, string>();
@@ -105,14 +105,14 @@ export default function VariantSelector({
   const colors = Array.from(colorMap.values()) as string[];
   // Для ноутбуков и часов не показываем выбор памяти
   // Берем доступные storage из вариантов, если они есть, иначе используем стандартный набор
-  const availableStorages = Array.from(new Set(variants.map(v => v.storage).filter(Boolean))) as string[];
+  const availableStorages = Array.from(new Set(variants.map((v: Variant) => v.storage).filter((s): s is string => Boolean(s)))) as string[];
   const storages: ('256GB' | '512GB' | '1TB')[] = hideMemoryStorage 
     ? [] 
     : (availableStorages.length > 0 ? availableStorages as ('256GB' | '512GB' | '1TB')[] : ['256GB', '512GB', '1TB']);
   
   // Для PlayStation определяем Edition из вариантов
   const editions = isPlayStation 
-    ? Array.from(new Set(variants.map(v => {
+    ? Array.from(new Set(variants.map((v: Variant) => {
         const sku = v.sku.toLowerCase();
         if (sku.includes('digital')) return 'Digital Edition';
         if (sku.includes('standard')) return 'Standard';
@@ -193,7 +193,7 @@ export default function VariantSelector({
     
     // ПРИОРИТЕТ 1: Ищем точное совпадение - серия + цвет + память
     if (isIPhone && selectedSeries && selectedColor && selectedStorage) {
-      const exactMatch = allVariants.find(v => 
+      const exactMatch = allVariants.find((v: Variant) => 
         v.model === selectedSeries && 
         v.color === selectedColor && 
         v.storage === selectedStorage
@@ -227,7 +227,7 @@ export default function VariantSelector({
       }
       
       // Если не нашли по памяти, пробуем найти вариант с выбранным цветом
-      const colorMatch = allVariants.find(v => v.color === selectedColor);
+      const colorMatch = allVariants.find((v: Variant) => v.color === selectedColor);
       if (colorMatch) {
         console.log('✅ Found color match (fallback), will use selected storage:', selectedStorage);
         // Вариант с правильным цветом найден, память будет заменена в displayVariant
@@ -238,7 +238,7 @@ export default function VariantSelector({
 
     // ПРИОРИТЕТ 3: Для iPhone - вариант с серией, цветом и памятью (если память еще не выбрана)
     if (isIPhone && selectedSeries && selectedColor && !selectedStorage) {
-      const seriesColorMatch = allVariants.find(v => 
+      const seriesColorMatch = allVariants.find((v: Variant) => 
         v.model === selectedSeries && 
         v.color === selectedColor
       );
@@ -250,7 +250,7 @@ export default function VariantSelector({
 
     // ПРИОРИТЕТ 4: Для iPhone - вариант с серией и памятью (если цвет еще не выбран)
     if (isIPhone && selectedSeries && selectedStorage && !selectedColor) {
-      const seriesStorageMatch = allVariants.find(v => 
+      const seriesStorageMatch = allVariants.find((v: Variant) => 
         v.model === selectedSeries && 
         v.storage === selectedStorage
       );
@@ -263,7 +263,7 @@ export default function VariantSelector({
     // ПРИОРИТЕТ 5: Вариант с выбранным цветом (только если память не выбрана)
     // НЕ ищем по памяти отдельно, чтобы не менять цвет при выборе памяти
     if (selectedColor && !selectedStorage) {
-      const colorMatch = allVariants.find(v => v.color === selectedColor);
+      const colorMatch = allVariants.find((v: Variant) => v.color === selectedColor);
       if (colorMatch) {
         console.log('✅ Found color match:', colorMatch.id);
         return colorMatch;
@@ -282,7 +282,7 @@ export default function VariantSelector({
 
     // ПРИОРИТЕТ 7: Для iPhone - вариант с выбранной серией
     if (isIPhone && selectedSeries) {
-      const seriesMatch = allVariants.find(v => v.model === selectedSeries);
+      const seriesMatch = allVariants.find((v: Variant) => v.model === selectedSeries);
       if (seriesMatch) {
         console.log('✅ Found series match:', seriesMatch.id);
         return seriesMatch;
@@ -315,21 +315,26 @@ export default function VariantSelector({
       // ВАЖНО: сохраняем color и storage из реального варианта
       // КРИТИЧНО: Сохраняем priceModifier из варианта
       // Используем variants для доступа к полному priceModifier
-      const fullVariant = variants.find(v => v.id === variant.id);
+      const fullVariant = variants.find((v: Variant) => v.id === variant.id);
+      interface VariantWithPriceModifier extends Variant {
+        priceModifier?: number;
+      }
+      const fullVariantTyped = fullVariant as VariantWithPriceModifier | undefined;
+      const variantTyped = variant as VariantWithPriceModifier;
       let displayVariant: Variant = {
         ...variant,
-        priceModifier: (fullVariant as any)?.priceModifier ?? (variant as any).priceModifier ?? 0,
+        priceModifier: fullVariantTyped?.priceModifier ?? variantTyped.priceModifier ?? 0,
       };
       if (isIPhone && selectedSeries && variant.model !== selectedSeries) {
         // Проверяем, что выбранная серия действительно существует в вариантах
-        const seriesExists = variants.some(v => v.model === selectedSeries);
+        const seriesExists = variants.some((v: Variant) => v.model === selectedSeries);
         if (seriesExists) {
           // Сохраняем все поля из реального варианта, особенно color, storage и priceModifier
           // КРИТИЧНО: Используем полный вариант из variants для доступа к priceModifier
-          const fullVariantForSeries = variants.find(v => v.id === variant.id);
+          const fullVariantForSeries = variants.find((v: Variant) => v.id === variant.id) as VariantWithPriceModifier | undefined;
           displayVariant = { 
             ...variant,
-            priceModifier: (fullVariantForSeries as any)?.priceModifier ?? (variant as any).priceModifier ?? displayVariant.priceModifier ?? 0,
+            priceModifier: fullVariantForSeries?.priceModifier ?? variantTyped.priceModifier ?? displayVariant.priceModifier ?? 0,
             model: selectedSeries as 'Pro' | 'Pro Max' | 'Standard' | 'Air'
           };
         }
@@ -354,8 +359,8 @@ export default function VariantSelector({
           // Получаем priceModifier из варианта с правильной памятью
           // КРИТИЧНО: Используем полный вариант из variants для доступа к priceModifier
           // Сначала ищем вариант с правильной памятью (для получения priceModifier)
-          const fullStorageVariant = storageVariant ? variants.find(v => v.id === storageVariant.id) : null;
-          const fullVariant = variants.find(v => v.id === variant.id);
+          const fullStorageVariant = storageVariant ? variants.find((v: Variant) => v.id === storageVariant.id) as VariantWithPriceModifier | undefined : null;
+          const fullVariant = variants.find((v: Variant) => v.id === variant.id) as VariantWithPriceModifier | undefined;
           
           // КРИТИЧНО: Получаем priceModifier из варианта с правильной памятью (1 ТБ)
           // Используем логику: 256GB = 0, 512GB = 200, 1TB = 500
@@ -368,7 +373,7 @@ export default function VariantSelector({
             priceModifier = 0;
           } else {
             // Если не определили из selectedStorage, берем из варианта
-            priceModifier = (fullStorageVariant as any)?.priceModifier ?? (fullVariant as any)?.priceModifier ?? (variant as any)?.priceModifier ?? displayVariant.priceModifier ?? 0;
+            priceModifier = fullStorageVariant?.priceModifier ?? fullVariant?.priceModifier ?? variantTyped.priceModifier ?? displayVariant.priceModifier ?? 0;
           }
           
           displayVariant = {
@@ -381,7 +386,7 @@ export default function VariantSelector({
             variantStorage: variant.storage,
             priceModifier: priceModifier,
             storageVariantId: storageVariant?.id,
-            fullStorageVariantPriceModifier: (fullStorageVariant as any)?.priceModifier,
+            fullStorageVariantPriceModifier: fullStorageVariant?.priceModifier,
             calculatedPriceModifier: priceModifier,
           });
         }
@@ -456,7 +461,7 @@ export default function VariantSelector({
     }
     if (type === 'storage' && selectedColor) {
       // Если цвет выбран, проверяем существует ли вариант с этим цветом и памятью
-      const exists = variants.some(v => 
+      const exists = variants.some((v: Variant) => 
         v.color === selectedColor && 
         v.storage === value &&
         v.available

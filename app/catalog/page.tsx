@@ -15,9 +15,9 @@ async function getFilterOptions() {
   ]);
 
   // Получаем только те категории, в которых есть товары
-  const categoriesWithProducts = new Set(products.map(p => p.categoryId));
+  const categoriesWithProducts = new Set(products.map((p) => p.categoryId));
   const categories = allCategories
-    .filter(cat => categoriesWithProducts.has(cat.id))
+    .filter((cat) => categoriesWithProducts.has(cat.id))
     .sort((a, b) => {
       // Сортируем по order, если есть, иначе по названию
       if (a.order !== null && b.order !== null) {
@@ -26,19 +26,14 @@ async function getFilterOptions() {
       if (a.order !== null) return -1;
       if (b.order !== null) return 1;
       return a.name.localeCompare(b.name);
-    })
-    .map(cat => ({
-      id: cat.id,
-      name: cat.name,
-      slug: cat.slug
-    }));
+    });
 
   const brands = [...new Set(products.map(p => p.brand))].sort();
-  const colors = [...new Set(products.flatMap(p => p.variants.map(v => v.color)))].filter((c): c is string => !!c).sort();
+  const colors = [...new Set(products.flatMap(p => p.variants.map(v => v.color).filter(Boolean)))].sort();
   const memories = [...new Set(products.flatMap(p => 
-    p.variants.flatMap(v => [v.memory, v.storage])
-  ))].filter((m): m is string => !!m).sort();
-  const sizes = [...new Set(products.flatMap(p => p.variants.map(v => v.size)))].filter((s): s is string => !!s).sort();
+    p.variants.flatMap(v => [v.memory, v.storage].filter(Boolean))
+  ))].sort();
+  const sizes = [...new Set(products.flatMap(p => p.variants.map(v => v.size).filter(Boolean)))].sort();
 
   const allPrices = products.flatMap(p => 
     p.variants.map(v => {

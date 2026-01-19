@@ -141,8 +141,8 @@ export async function GET(request: NextRequest) {
                 try {
                   if (fs.existsSync(PATH_HEADPHONES)) {
                     const allFolders = fs.readdirSync(PATH_HEADPHONES, { withFileTypes: true })
-                      .filter(item => item.isDirectory())
-                      .map(item => item.name);
+                      .filter((item) => item.isDirectory())
+                      .map((item) => item.name);
                     const matching = allFolders.find(f => 
                       f === variantFolderName ||
                       f.toLowerCase() === variantFolderName.toLowerCase() ||
@@ -195,8 +195,8 @@ export async function GET(request: NextRequest) {
             
             if (fs.existsSync(folderPath)) {
               const images = fs.readdirSync(folderPath, { withFileTypes: true })
-                .filter(file => file.isFile())
-                .map(file => file.name)
+                .filter((file) => file.isFile())
+                .map((file) => file.name)
                 .filter(name => {
                   // Исключаем резервные копии, но НЕ исключаем __main.jpeg (главное изображение для ноутбуков)
                   if (name.startsWith('_backup_')) {
@@ -225,7 +225,7 @@ export async function GET(request: NextRequest) {
                 
                 // Добавляем timestamp для обхода кеша браузера
                 const timestamp = Date.now();
-                const imageUrls = sortedImages.map(img => {
+                const imageUrls = sortedImages.map((img: string) => {
                   const baseUrl = `/api/images/${encodeURIComponent(variantFolderName!)}/${encodeURIComponent(img)}`;
                   return `${baseUrl}?t=${timestamp}`;
                 });
@@ -330,8 +330,8 @@ export async function GET(request: NextRequest) {
           // Ищем папки напрямую в базовой папке
           if (fs.existsSync(searchBasePath)) {
             const allFolders = fs.readdirSync(searchBasePath, { withFileTypes: true })
-              .filter(item => item.isDirectory())
-              .map(item => item.name);
+              .filter((item) => item.isDirectory())
+              .map((item) => item.name);
             
             console.log('📂 Total folders in base path:', allFolders.length);
             
@@ -341,8 +341,8 @@ export async function GET(request: NextRequest) {
               if (exactMatch) {
                 const folderPath = path.join(searchBasePath, exactMatch);
                 const images = fs.readdirSync(folderPath, { withFileTypes: true })
-                  .filter(file => file.isFile())
-                  .map(file => file.name)
+                  .filter((file) => file.isFile())
+                  .map((file) => file.name)
                   .filter(name => {
                     const ext = path.extname(name).toLowerCase();
                     return ['.jpg', '.jpeg', '.png', '.webp', '.gif'].includes(ext);

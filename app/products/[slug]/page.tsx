@@ -31,7 +31,7 @@ export default async function ProductPage({ params }: PageProps) {
   const isIPhone = product.category.slug === 'iphone' || product.model.toLowerCase().includes('iphone');
   
   // Преобразуем варианты из БД в новую структуру
-  const transformedVariants = product.variants.map(variant => {
+  const transformedVariants = product.variants.map((variant) => {
     // Определяем model из product.model и SKU для iPhone
     const productModelLower = product.model.toLowerCase();
     const skuLower = variant.sku.toLowerCase();

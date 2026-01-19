@@ -8,7 +8,7 @@ interface SafeLinkProps {
   children: ReactNode;
   className?: string;
   onClick?: () => void;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 // Обертка для Link, которая автоматически добавляет suppressHydrationWarning

@@ -15,7 +15,11 @@ export async function GET(request: NextRequest) {
     const inStock = searchParams.get('inStock') === 'true';
 
     // Build where clause
-    const where: any = {};
+    interface WhereClause {
+      category?: { slug: string };
+      brand?: string;
+    }
+    const where: WhereClause = {};
 
     // Search query (SQLite doesn't support case-insensitive, filter after fetch)
     // We'll filter in JS after fetching
@@ -88,22 +92,22 @@ export async function GET(request: NextRequest) {
       let filteredVariants = product.variants;
 
       if (colors.length > 0) {
-        filteredVariants = filteredVariants.filter(v => v.color && colors.includes(v.color));
+        filteredVariants = filteredVariants.filter((v) => v.color && colors.includes(v.color));
       }
 
       if (memories.length > 0) {
-        filteredVariants = filteredVariants.filter(v => 
+        filteredVariants = filteredVariants.filter((v) => 
           (v.memory && memories.includes(v.memory)) ||
           (v.storage && memories.includes(v.storage))
         );
       }
 
       if (sizes.length > 0) {
-        filteredVariants = filteredVariants.filter(v => v.size && sizes.includes(v.size));
+        filteredVariants = filteredVariants.filter((v) => v.size && sizes.includes(v.size));
       }
 
       if (inStock) {
-        filteredVariants = filteredVariants.filter(v => v.inStock && v.stock > 0);
+        filteredVariants = filteredVariants.filter((v) => v.inStock && v.stock > 0);
       }
 
       // Price filtering
@@ -111,7 +115,7 @@ export async function GET(request: NextRequest) {
         const min = minPrice ? parseFloat(minPrice) : 0;
         const max = maxPrice ? parseFloat(maxPrice) : Infinity;
         
-        filteredVariants = filteredVariants.filter(v => {
+        filteredVariants = filteredVariants.filter((v) => {
           const price = product.basePrice * (1 - product.discount / 100) + (v.priceModifier || 0);
           return price >= min && price <= max;
         });

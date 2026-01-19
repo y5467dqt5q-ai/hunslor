@@ -46,7 +46,7 @@ function ProductCardWithImage({ product }: { product: Product }) {
     }
   }, [product.slug, product.variants]);
   
-  const prices = product.variants.map(v => {
+  const prices = product.variants.map((v: Product['variants'][0]) => {
     const basePrice = product.basePrice * (1 - product.discount / 100);
     return basePrice + (v.priceModifier || 0);
   });

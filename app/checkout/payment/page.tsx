@@ -117,7 +117,7 @@ function PaymentForm() {
 
     try {
       // Подготавливаем данные заказа
-      const orderItems = items.map(item => ({
+      const orderItems = items.map((item) => ({
         productId: item.productId,
         variantId: item.variantId,
         quantity: item.quantity,
@@ -160,7 +160,7 @@ function PaymentForm() {
         },
         body: JSON.stringify({
           orderId: realOrderId, // Передаем реальный orderId
-          items: items.map(item => ({
+          items: items.map((item) => ({
             title: item.title,
             quantity: item.quantity,
             price: item.price,

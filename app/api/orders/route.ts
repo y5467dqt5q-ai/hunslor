@@ -26,7 +26,7 @@ const createOrderSchema = z.object({
     variantId: z.string(),
     quantity: z.number().int().positive(),
     price: z.number(),
-    variantData: z.any(),
+    variantData: z.record(z.unknown()),
   })),
   shippingAddress: z.object({
     name: z.string(),
@@ -63,7 +63,7 @@ export async function POST(request: NextRequest) {
         shippingAddress: JSON.stringify(shippingAddress),
         paymentMethod,
         items: {
-          create: items.map(item => ({
+          create: items.map((item) => ({
             productId: item.productId,
             variantId: item.variantId,
             variantData: JSON.stringify(item.variantData),

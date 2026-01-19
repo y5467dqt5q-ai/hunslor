@@ -267,7 +267,7 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
             
             {Array.isArray(variantImages) && variantImages.length > 0 && (
               <div className="grid grid-cols-4 gap-2">
-                {variantImages.map((img, idx) => (
+                {variantImages.map((img: string, idx: number) => (
                   <button
                     key={`thumb-${idx}-${img}`}
                     onClick={() => setCurrentImageIndex(idx)}

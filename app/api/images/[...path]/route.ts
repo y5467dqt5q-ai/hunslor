@@ -45,7 +45,7 @@ export async function GET(
 ) {
   try {
     // Декодируем каждый сегмент пути
-    const decodedPath = params.path.map(segment => {
+    const decodedPath = params.path.map((segment: string) => {
       try {
         return decodeURIComponent(segment);
       } catch (e) {

@@ -80,7 +80,7 @@ export default function FavoritesPage() {
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {products.map((product) => {
-            const prices = product.variants.map(v => {
+            const prices = product.variants.map((v) => {
               const basePrice = product.basePrice * (1 - product.discount / 100);
               return basePrice;
             });
