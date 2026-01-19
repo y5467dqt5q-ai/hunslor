@@ -96,36 +96,47 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
           const data = jsonData as { images?: unknown; mainImage?: unknown };
           
           // STRICT TYPE SAFETY IMPLEMENTATION
-          const sourceImages: unknown = data.images;
-          const rawImages: unknown[] = Array.isArray(sourceImages) ? sourceImages : [];
+          const images: unknown = data.images;
 
+          // 🔒 ЖЁСТКО ТИПИЗИРОВАННАЯ ОБРАБОТКА ИЗОБРАЖЕНИЙ (БЕЗ any) 
+ 
+          const rawImages: unknown[] = Array.isArray (images) ? images : []; 
+          
           // Fallback to mainImage if rawImages is empty
           if (rawImages.length === 0 && typeof data.mainImage === 'string' && data.mainImage.length > 0) {
             rawImages.push(data.mainImage);
           }
-
-          const safeImages: string[] = rawImages.filter(
-            (img): img is string => typeof img === 'string' && img.length > 0
-          );
-          
-          console.log('✅ Loaded images for variant:', selectedVariant.id, 'images:', safeImages.length);
-          
-          if (safeImages.length > 0) {
-            const cacheBuster = `${Date.now()}_${Math.random().toString(36).substring(7)}`;
-            
-            const imagesWithCacheBuster: string[] = safeImages.map(
-              (img: string): string => 
-                img.includes('?') 
-                  ? `${img}&_cb=${cacheBuster}` 
-                  : `${img}?_cb=${cacheBuster}` 
-            );
-            
-            setVariantImages(imagesWithCacheBuster);
-            setCurrentImageIndex(0);
-          } else {
-            console.warn('⚠️ No images found for variant:', selectedVariant.id);
-            setVariantImages([]);
-            setCurrentImageIndex(0);
+ 
+          const safeImages: string[] = rawImages.filter ( 
+            (img): img is string  => 
+              typeof img === 'string' && img.trim().length > 0 
+          ); 
+ 
+          console.log ( 
+            '✅ Loaded images for variant:' , 
+            selectedVariant.id , 
+            'count:' , 
+            safeImages.length 
+          ); 
+ 
+          if (safeImages.length > 0 ) { 
+            const cacheBuster: string = `${Date.now()}_${Math .random() 
+              .toString(36 ) 
+              .substring(7 )}`; 
+ 
+            const imagesWithCacheBuster: string[] = safeImages.map ( 
+              (img: string): string  => 
+                img.includes('?' ) 
+                  ? `${img}&_cb=${cacheBuster} ` 
+                  : `${img}?_cb=${cacheBuster} ` 
+            ); 
+ 
+            setVariantImages (imagesWithCacheBuster); 
+            setCurrentImageIndex(0 ); 
+          } else  { 
+            console.warn('⚠ No images found for variant:', selectedVariant.id ); 
+            setVariantImages ([]); 
+            setCurrentImageIndex(0 ); 
           }
         } else {
           console.error('❌ Failed to load images, status:', response.status);
