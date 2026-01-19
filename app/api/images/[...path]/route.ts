@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
 import os from 'os';
+import type { Dirent } from 'fs';
 
 // Получаем путь из переменной окружения или используем дефолтный
 const getImagesPath = () => {

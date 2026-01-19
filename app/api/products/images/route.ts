@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma';
 import { getProductImagePath, getVariantImages } from '@/lib/images';
 import path from 'path';
 import fs from 'fs';
+import type { Dirent } from 'fs';
 
 // Получаем путь к папке images
 const getImagesPath = () => {
@@ -141,9 +142,9 @@ export async function GET(request: NextRequest) {
                 try {
                   if (fs.existsSync(PATH_HEADPHONES)) {
                     const allFolders = fs.readdirSync(PATH_HEADPHONES, { withFileTypes: true })
-                      .filter((item) => item.isDirectory())
-                      .map((item) => item.name);
-                    const matching = allFolders.find(f => 
+                      .filter((item: Dirent) => item.isDirectory())
+                      .map((item: Dirent) => item.name);
+                    const matching = allFolders.find((f: string) => 
                       f === variantFolderName ||
                       f.toLowerCase() === variantFolderName.toLowerCase() ||
                       f.includes(variantFolderName.substring(0, 10)) ||
@@ -195,9 +196,9 @@ export async function GET(request: NextRequest) {
             
             if (fs.existsSync(folderPath)) {
               const images = fs.readdirSync(folderPath, { withFileTypes: true })
-                .filter((file) => file.isFile())
-                .map((file) => file.name)
-                .filter(name => {
+                .filter((file: Dirent) => file.isFile())
+                .map((file: Dirent) => file.name)
+                .filter((name: string) => {
                   // Исключаем резервные копии, но НЕ исключаем __main.jpeg (главное изображение для ноутбуков)
                   if (name.startsWith('_backup_')) {
                     return false;
@@ -330,20 +331,20 @@ export async function GET(request: NextRequest) {
           // Ищем папки напрямую в базовой папке
           if (fs.existsSync(searchBasePath)) {
             const allFolders = fs.readdirSync(searchBasePath, { withFileTypes: true })
-              .filter((item) => item.isDirectory())
-              .map((item) => item.name);
+              .filter((item: Dirent) => item.isDirectory())
+              .map((item: Dirent) => item.name);
             
             console.log('📂 Total folders in base path:', allFolders.length);
             
             // Ищем точное совпадение
             for (const folderName of possibleFolderNames) {
-              const exactMatch = allFolders.find(f => f === folderName);
+              const exactMatch = allFolders.find((f: string) => f === folderName);
               if (exactMatch) {
                 const folderPath = path.join(searchBasePath, exactMatch);
                 const images = fs.readdirSync(folderPath, { withFileTypes: true })
                   .filter((file) => file.isFile())
                   .map((file) => file.name)
-                  .filter(name => {
+                  .filter((name: string) => {
                     const ext = path.extname(name).toLowerCase();
                     return ['.jpg', '.jpeg', '.png', '.webp', '.gif'].includes(ext);
                   })
@@ -382,9 +383,9 @@ export async function GET(request: NextRequest) {
                 if (matches >= 3) {
                   const folderPath = path.join(searchBasePath, folder);
                   const images = fs.readdirSync(folderPath, { withFileTypes: true })
-                    .filter(file => file.isFile())
-                    .map(file => file.name)
-                    .filter(name => {
+                    .filter((file: Dirent) => file.isFile())
+                    .map((file: Dirent) => file.name)
+                    .filter((name: string) => {
                       const ext = path.extname(name).toLowerCase();
                       return ['.jpg', '.jpeg', '.png', '.webp', '.gif'].includes(ext);
                     })
@@ -410,8 +411,8 @@ export async function GET(request: NextRequest) {
         
         if (fs.existsSync(variantFolderPath)) {
           const imageFiles = fs.readdirSync(variantFolderPath, { withFileTypes: true })
-            .filter(file => file.isFile())
-            .map(file => file.name)
+            .filter((file: Dirent) => file.isFile())
+            .map((file: Dirent) => file.name)
             .filter(name => {
               const ext = path.extname(name).toLowerCase();
               return ['.jpg', '.jpeg', '.png', '.webp', '.gif'].includes(ext);
@@ -419,7 +420,7 @@ export async function GET(request: NextRequest) {
             .sort();
           
           if (imageFiles.length > 0) {
-            const imageUrls = imageFiles.map(fileName => {
+            const imageUrls = imageFiles.map((fileName: string) => {
               const encodedFolder = encodeURIComponent(actualVariantPath);
               const encodedFile = encodeURIComponent(fileName);
               return `/api/images/${encodedFolder}/${encodedFile}`;

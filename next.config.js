@@ -18,7 +18,7 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   typescript: {
-    // Игнорируем TypeScript ошибки во время сборки для продакшена
+    // НЕ игнорируем TypeScript ошибки - все должно быть исправлено
     ignoreBuildErrors: false,
   },
 }

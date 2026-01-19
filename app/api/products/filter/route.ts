@@ -88,7 +88,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Filter by variant attributes and price
-    let filteredProducts = searchFilteredProducts.map(product => {
+    let filteredProducts = searchFilteredProducts.map((product) => {
       let filteredVariants = product.variants;
 
       if (colors.length > 0) {

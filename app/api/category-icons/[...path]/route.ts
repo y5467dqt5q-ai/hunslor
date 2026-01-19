@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
+import type { Dirent } from 'fs';
 
 // Путь к папке с мини-картинками
 const getCategoryIconsPath = () => {
@@ -55,8 +56,8 @@ export async function GET(
       console.log('⚠️ Path does not exist, searching for folder...');
       if (fs.existsSync(CATEGORY_ICONS_BASE_PATH)) {
         const folders = fs.readdirSync(CATEGORY_ICONS_BASE_PATH, { withFileTypes: true })
-          .filter((item) => item.isDirectory())
-          .map((item) => item.name);
+          .filter((item: Dirent) => item.isDirectory())
+          .map((item: Dirent) => item.name);
         
         console.log('📂 Available folders:', folders);
         
@@ -85,8 +86,8 @@ export async function GET(
     if (foundFolder && fs.existsSync(folderPath)) {
       console.log('🔍 Searching for images in folder:', folderPath);
       const files = fs.readdirSync(folderPath, { withFileTypes: true })
-        .filter((file) => file.isFile())
-        .map((file) => file.name)
+        .filter((file: Dirent) => file.isFile())
+        .map((file: Dirent) => file.name)
         .filter(fileName => {
           const ext = path.extname(fileName).toLowerCase();
           return ['.jpg', '.jpeg', '.png', '.webp', '.gif', '.svg'].includes(ext);
