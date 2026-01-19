@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+ï»¿import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import jwt from 'jsonwebtoken';
 import { z } from 'zod';
@@ -108,8 +108,8 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // ¦ß¦-¦¬TÃTÇ¦-¦¦¦- TÂ¦-¦¬TÌ¦¦¦- TÃTÁ¦¬¦¦TÈ¦-¦- ¦-TÄ¦-TÀ¦-¦¬¦¦¦-¦-TË¦¦ ¦¬¦-¦¦¦-¦¬TË (¦-¦¦ pending, ¦-¦¦ cancelled, ¦-¦¦ error)
-    // ¦ãTÁ¦¬¦¦TÈ¦-TË¦¦ TÁTÂ¦-TÂTÃTÁTË: completed, shipped, delivered, processing
+    // Ð¶â–€Ð¶-Ð¶Ð¼Tâ”œTâ•ŸÐ¶-Ð¶Ð¶Ð¶- Tâ”¬Ð¶-Ð¶Ð¼Tâ• Ð¶Ð¶Ð¶- Tâ”œTâ”´Ð¶Ð¼Ð¶Ð¶Tâ•šÐ¶-Ð¶- Ð¶-Tâ”€Ð¶-Tâ””Ð¶-Ð¶Ð¼Ð¶Ð¶Ð¶-Ð¶-Tâ•¦Ð¶Ð¶ Ð¶Ð¼Ð¶-Ð¶Ð¶Ð¶-Ð¶Ð¼Tâ•¦ (Ð¶-Ð¶Ð¶ pending, Ð¶-Ð¶Ð¶ cancelled, Ð¶-Ð¶Ð¶ error)
+    // Ð¶ÑƒTâ”´Ð¶Ð¼Ð¶Ð¶Tâ•šÐ¶-Tâ•¦Ð¶Ð¶ Tâ”´Tâ”¬Ð¶-Tâ”¬Tâ”œTâ”´Tâ•¦: completed, shipped, delivered, processing
     const orders = await prisma.order.findMany({
       where: { 
         userId,
