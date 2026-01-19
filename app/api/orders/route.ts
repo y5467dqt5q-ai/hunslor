@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+﻿import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import jwt from 'jsonwebtoken';
 import { z } from 'zod';
@@ -85,7 +85,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Ungültige Eingabe', details: error.issues },
+        { error: 'Ung├╝ltige Eingabe', details: error.issues },
         { status: 400 }
       );
     }
@@ -108,8 +108,8 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Получаем только успешно оформленные заказы (не pending, не cancelled, не error)
-    // Успешные статусы: completed, shipped, delivered, processing
+    // ╨Я╨╛╨╗╤Г╤З╨░╨╡╨╝ ╤В╨╛╨╗╤М╨║╨╛ ╤Г╤Б╨┐╨╡╤И╨╜╨╛ ╨╛╤Д╨╛╤А╨╝╨╗╨╡╨╜╨╜╤Л╨╡ ╨╖╨░╨║╨░╨╖╤Л (╨╜╨╡ pending, ╨╜╨╡ cancelled, ╨╜╨╡ error)
+    // ╨г╤Б╨┐╨╡╤И╨╜╤Л╨╡ ╤Б╤В╨░╤В╤Г╤Б╤Л: completed, shipped, delivered, processing
     const orders = await prisma.order.findMany({
       where: { 
         userId,
