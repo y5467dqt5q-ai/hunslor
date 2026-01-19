@@ -87,18 +87,21 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
         });
 
         if (response.ok) {
-          const data = await response.json() as { images?: string[]; mainImage?: string };
-          const images: string[] = data.images && Array.isArray(data.images) && data.images.length > 0
-            ? (data.images as string[])
-            : data.mainImage && typeof data.mainImage === 'string'
-            ? [data.mainImage]
-            : [];
+          const data: { images?: string[]; mainImage?: string } = await response.json();
+          const images: string[] = (() => {
+            if (data.images && Array.isArray(data.images) && data.images.length > 0) {
+              return data.images.filter((item): item is string => typeof item === 'string');
+            }
+            if (data.mainImage && typeof data.mainImage === 'string') {
+              return [data.mainImage];
+            }
+            return [];
+          })();
           
           console.log('✅ Loaded images for variant:', selectedVariant.id, 'images:', images.length);
           if (images.length > 0) {
-            // КРИТИЧНО: Добавляем cache buster к каждому изображению для принудительного обновления
             const cacheBuster = `${Date.now()}_${Math.random().toString(36).substring(7)}`;
-            const imagesWithCacheBuster: string[] = images.map((img: string) => {
+            const imagesWithCacheBuster: string[] = images.map((img: string): string => {
               return img.includes('?') ? `${img}&_cb=${cacheBuster}` : `${img}?_cb=${cacheBuster}`;
             });
             setVariantImages(imagesWithCacheBuster);
