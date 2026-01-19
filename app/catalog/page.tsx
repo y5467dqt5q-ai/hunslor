@@ -28,15 +28,15 @@ async function getFilterOptions() {
       return a.name.localeCompare(b.name);
     });
 
-  const brands = [...new Set(products.map(p => p.brand))].sort();
-  const colors = [...new Set(products.flatMap(p => p.variants.map(v => v.color).filter(Boolean)))].sort();
-  const memories = [...new Set(products.flatMap(p => 
-    p.variants.flatMap(v => [v.memory, v.storage].filter(Boolean))
+  const brands = [...new Set(products.map((p) => p.brand))].sort();
+  const colors = [...new Set(products.flatMap((p) => p.variants.map((v) => v.color).filter(Boolean)))].sort();
+  const memories = [...new Set(products.flatMap((p) => 
+    p.variants.flatMap((v) => [v.memory, v.storage].filter(Boolean))
   ))].sort();
-  const sizes = [...new Set(products.flatMap(p => p.variants.map(v => v.size).filter(Boolean)))].sort();
+  const sizes = [...new Set(products.flatMap((p) => p.variants.map((v) => v.size).filter(Boolean)))].sort();
 
-  const allPrices = products.flatMap(p => 
-    p.variants.map(v => {
+  const allPrices = products.flatMap((p) => 
+    p.variants.map((v) => {
       const price = p.basePrice * (1 - p.discount / 100) + (v.priceModifier || 0);
       return price;
     })
