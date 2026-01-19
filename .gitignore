@@ -1,12 +1,11 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
-/node_modules
+node_modules
 /.pnp
 .pnp.js
 
 # testing
-/coverage
+coverage
 
 # next.js
 /.next/
@@ -22,7 +21,18 @@
 # debug
 npm-debug.log*
 yarn-debug.log*
-yarn-error.log*
+ts-debug.log*
+
+# local env files
+.env*.local
+.env
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
 
 # scripts with secrets
 auto-setup-railway.ps1
@@ -32,21 +42,5 @@ setup-railway-simple.ps1
 setup-railway.js
 deploy-railway-api.ps1
 deploy-railway-full.ps1
-.env
-.env.local
-
-# vercel
-.vercel
-
-# typescript
-*.tsbuildinfo
-next-env.d.ts
-
-# prisma
-/prisma/dev.db
-/prisma/dev.db-journal
-*.db
-*.db-journal
-
-# images (локальная копия)
-/images
+redeploy-railway.ps1
+update-railway-vars.ps1
