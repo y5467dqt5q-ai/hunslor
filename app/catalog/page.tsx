@@ -26,7 +26,12 @@ async function getFilterOptions() {
       if (a.order !== null) return -1;
       if (b.order !== null) return 1;
       return a.name.localeCompare(b.name);
-    });
+    })
+    .map(cat => ({
+      id: cat.id,
+      name: cat.name,
+      slug: cat.slug
+    }));
 
   const brands = [...new Set(products.map(p => p.brand))].sort();
   const colors = [...new Set(products.flatMap(p => p.variants.map(v => v.color)))].filter((c): c is string => !!c).sort();
