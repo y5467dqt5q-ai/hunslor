@@ -254,7 +254,7 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
       image: mainImage,
       quantity: 1,
       variantData: {
-        model: selectedVariant.model,
+        
         color: selectedVariant.color,
         storage: selectedVariant.storage,
       },
