@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 
@@ -30,11 +30,11 @@ export default function VariantSelector({
   productModel,
   categorySlug,
 }: VariantSelectorProps) {
-  // Определяем, какие варианты показывать в зависимости от категории
+  // ╨Ю╨┐╤А╨╡╨┤╨╡╨╗╤П╨╡╨╝, ╨║╨░╨║╨╕╨╡ ╨▓╨░╤А╨╕╨░╨╜╤В╤Л ╨┐╨╛╨║╨░╨╖╤Л╨▓╨░╤В╤М ╨▓ ╨╖╨░╨▓╨╕╤Б╨╕╨╝╨╛╤Б╤В╨╕ ╨╛╤В ╨║╨░╤В╨╡╨│╨╛╤А╨╕╨╕
   const isIPhone = categorySlug === 'iphone' || productModel.toLowerCase().includes('iphone');
   const isPlayStation = categorySlug === 'game-consoles' || productModel.toLowerCase().includes('playstation');
   
-  // Проверяем, нужно ли скрыть выбор памяти/цветов (для часов и ноутбуков)
+  // ╨Я╤А╨╛╨▓╨╡╤А╤П╨╡╨╝, ╨╜╤Г╨╢╨╜╨╛ ╨╗╨╕ ╤Б╨║╤А╤Л╤В╤М ╨▓╤Л╨▒╨╛╤А ╨┐╨░╨╝╤П╤В╨╕/╤Ж╨▓╨╡╤В╨╛╨▓ (╨┤╨╗╤П ╤З╨░╤Б╨╛╨▓ ╨╕ ╨╜╨╛╤Г╤В╨▒╤Г╨║╨╛╨▓)
   const isWatch = categorySlug === 'smartwatches' || 
                   categorySlug === 'watch' || 
                   categorySlug === 'smartwatch' ||
@@ -54,7 +54,7 @@ export default function VariantSelector({
                (productModel && productModel.toLowerCase().includes('samsung') && productModel.toLowerCase().includes('qe'));
   
   const isHeadphones = categorySlug === 'headphones' ||
-                       categorySlug === 'kopfhörer' ||
+                       categorySlug === 'kopfh├╢rer' ||
                        (productModel && (productModel.toLowerCase().includes('airpods') || productModel.toLowerCase().includes('headphone')));
   
   const isVR = categorySlug === 'vr-headsets' ||
@@ -84,15 +84,15 @@ export default function VariantSelector({
                                     productModel.toLowerCase().includes('sony') ||
                                     productModel.toLowerCase().includes('nikon')));
   
-  // Для ноутбуков, часов, TV, наушников, VR, консолей, Smart Home и камер скрываем выбор памяти и цветов
-  // Для Dyson скрываем только память, цвета показываем
+  // ╨Ф╨╗╤П ╨╜╨╛╤Г╤В╨▒╤Г╨║╨╛╨▓, ╤З╨░╤Б╨╛╨▓, TV, ╨╜╨░╤Г╤И╨╜╨╕╨║╨╛╨▓, VR, ╨║╨╛╨╜╤Б╨╛╨╗╨╡╨╣, Smart Home ╨╕ ╨║╨░╨╝╨╡╤А ╤Б╨║╤А╤Л╨▓╨░╨╡╨╝ ╨▓╤Л╨▒╨╛╤А ╨┐╨░╨╝╤П╤В╨╕ ╨╕ ╤Ж╨▓╨╡╤В╨╛╨▓
+  // ╨Ф╨╗╤П Dyson ╤Б╨║╤А╤Л╨▓╨░╨╡╨╝ ╤В╨╛╨╗╤М╨║╨╛ ╨┐╨░╨╝╤П╤В╤М, ╤Ж╨▓╨╡╤В╨░ ╨┐╨╛╨║╨░╨╖╤Л╨▓╨░╨╡╨╝
   const hideMemoryStorage = isWatch || isLaptop || isTV || isHeadphones || isVR || isConsole || isSmartHome || isCamera;
-  const hideMemoryOnly = isDyson; // Только память, цвета показываем
+  const hideMemoryOnly = isDyson; // ╨в╨╛╨╗╤М╨║╨╛ ╨┐╨░╨╝╤П╤В╤М, ╤Ж╨▓╨╡╤В╨░ ╨┐╨╛╨║╨░╨╖╤Л╨▓╨░╨╡╨╝
   
-  // Определяем доступные серии из вариантов
+  // ╨Ю╨┐╤А╨╡╨┤╨╡╨╗╤П╨╡╨╝ ╨┤╨╛╤Б╤В╤Г╨┐╨╜╤Л╨╡ ╤Б╨╡╤А╨╕╨╕ ╨╕╨╖ ╨▓╨░╤А╨╕╨░╨╜╤В╨╛╨▓
   const availableSeries = Array.from(new Set(variants.map((v: Variant) => v.model))) as ('Pro' | 'Pro Max' | 'Standard' | 'Air')[];
   const series: ('Pro' | 'Pro Max' | 'Standard' | 'Air')[] = isIPhone && availableSeries.length > 0 ? availableSeries : [];
-  // Убираем дубликаты цветов (регистронезависимо)
+  // ╨г╨▒╨╕╤А╨░╨╡╨╝ ╨┤╤Г╨▒╨╗╨╕╨║╨░╤В╤Л ╤Ж╨▓╨╡╤В╨╛╨▓ (╤А╨╡╨│╨╕╤Б╤В╤А╨╛╨╜╨╡╨╖╨░╨▓╨╕╤Б╨╕╨╝╨╛)
   const colorMap = new Map<string, string>();
   variants.forEach((v: Variant) => {
     if (v.color) {
@@ -103,14 +103,14 @@ export default function VariantSelector({
     }
   });
   const colors = Array.from(colorMap.values()) as string[];
-  // Для ноутбуков и часов не показываем выбор памяти
-  // Берем доступные storage из вариантов, если они есть, иначе используем стандартный набор
+  // ╨Ф╨╗╤П ╨╜╨╛╤Г╤В╨▒╤Г╨║╨╛╨▓ ╨╕ ╤З╨░╤Б╨╛╨▓ ╨╜╨╡ ╨┐╨╛╨║╨░╨╖╤Л╨▓╨░╨╡╨╝ ╨▓╤Л╨▒╨╛╤А ╨┐╨░╨╝╤П╤В╨╕
+  // ╨С╨╡╤А╨╡╨╝ ╨┤╨╛╤Б╤В╤Г╨┐╨╜╤Л╨╡ storage ╨╕╨╖ ╨▓╨░╤А╨╕╨░╨╜╤В╨╛╨▓, ╨╡╤Б╨╗╨╕ ╨╛╨╜╨╕ ╨╡╤Б╤В╤М, ╨╕╨╜╨░╤З╨╡ ╨╕╤Б╨┐╨╛╨╗╤М╨╖╤Г╨╡╨╝ ╤Б╤В╨░╨╜╨┤╨░╤А╤В╨╜╤Л╨╣ ╨╜╨░╨▒╨╛╤А
   const availableStorages = Array.from(new Set(variants.map((v: Variant) => v.storage).filter((s): s is string => Boolean(s)))) as string[];
   const storages: ('256GB' | '512GB' | '1TB')[] = hideMemoryStorage 
     ? [] 
     : (availableStorages.length > 0 ? availableStorages as ('256GB' | '512GB' | '1TB')[] : ['256GB', '512GB', '1TB']);
   
-  // Для PlayStation определяем Edition из вариантов
+  // ╨Ф╨╗╤П PlayStation ╨╛╨┐╤А╨╡╨┤╨╡╨╗╤П╨╡╨╝ Edition ╨╕╨╖ ╨▓╨░╤А╨╕╨░╨╜╤В╨╛╨▓
   const editions = isPlayStation 
     ? Array.from(new Set(variants.map((v: Variant) => {
         const sku = v.sku.toLowerCase();
@@ -120,11 +120,11 @@ export default function VariantSelector({
       })))
     : [];
 
-  // КРИТИЧНО: Определяем начальную серию из productModel, если она указана
+  // ╨Ъ╨а╨Ш╨в╨Ш╨з╨Э╨Ю: ╨Ю╨┐╤А╨╡╨┤╨╡╨╗╤П╨╡╨╝ ╨╜╨░╤З╨░╨╗╤М╨╜╤Г╤О ╤Б╨╡╤А╨╕╤О ╨╕╨╖ productModel, ╨╡╤Б╨╗╨╕ ╨╛╨╜╨░ ╤Г╨║╨░╨╖╨░╨╜╨░
   const getInitialSeries = (): 'Pro' | 'Pro Max' | 'Standard' | 'Air' | null => {
     if (!isIPhone || series.length === 0) return null;
     
-    // Если в productModel указана серия, используем её
+    // ╨Х╤Б╨╗╨╕ ╨▓ productModel ╤Г╨║╨░╨╖╨░╨╜╨░ ╤Б╨╡╤А╨╕╤П, ╨╕╤Б╨┐╨╛╨╗╤М╨╖╤Г╨╡╨╝ ╨╡╤С
     const productModelLower = productModel.toLowerCase();
     if (productModelLower.includes('pro max')) {
       return 'Pro Max';
@@ -134,7 +134,7 @@ export default function VariantSelector({
       return 'Air';
     }
     
-    // Иначе используем из selectedVariant или первую доступную
+    // ╨Ш╨╜╨░╤З╨╡ ╨╕╤Б╨┐╨╛╨╗╤М╨╖╤Г╨╡╨╝ ╨╕╨╖ selectedVariant ╨╕╨╗╨╕ ╨┐╨╡╤А╨▓╤Г╤О ╨┤╨╛╤Б╤В╤Г╨┐╨╜╤Г╤О
     return (selectedVariant?.model || series[0] || null) as 'Pro' | 'Pro Max' | 'Standard' | 'Air' | null;
   };
 
@@ -146,9 +146,9 @@ export default function VariantSelector({
     selectedVariant?.storage || null
   );
 
-  // Инициализируем состояние из selectedVariant и productModel
+  // ╨Ш╨╜╨╕╤Ж╨╕╨░╨╗╨╕╨╖╨╕╤А╤Г╨╡╨╝ ╤Б╨╛╤Б╤В╨╛╤П╨╜╨╕╨╡ ╨╕╨╖ selectedVariant ╨╕ productModel
   useEffect(() => {
-    // КРИТИЧНО: Синхронизируем selectedSeries с productModel
+    // ╨Ъ╨а╨Ш╨в╨Ш╨з╨Э╨Ю: ╨б╨╕╨╜╤Е╤А╨╛╨╜╨╕╨╖╨╕╤А╤Г╨╡╨╝ selectedSeries ╤Б productModel
     if (isIPhone && series.length > 0) {
       const productModelLower = productModel.toLowerCase();
       let expectedSeries: 'Pro' | 'Pro Max' | 'Standard' | 'Air' | null = null;
@@ -168,7 +168,7 @@ export default function VariantSelector({
       }
     }
     
-    // Инициализируем цвет и память из selectedVariant только при первой загрузке
+    // ╨Ш╨╜╨╕╤Ж╨╕╨░╨╗╨╕╨╖╨╕╤А╤Г╨╡╨╝ ╤Ж╨▓╨╡╤В ╨╕ ╨┐╨░╨╝╤П╤В╤М ╨╕╨╖ selectedVariant ╤В╨╛╨╗╤М╨║╨╛ ╨┐╤А╨╕ ╨┐╨╡╤А╨▓╨╛╨╣ ╨╖╨░╨│╤А╤Г╨╖╨║╨╡
     if (selectedVariant) {
       if (!selectedColor && selectedVariant.color) {
         setSelectedColor(selectedVariant.color);
@@ -181,17 +181,17 @@ export default function VariantSelector({
   }, [selectedVariant?.id, productModel]);
 
   const findMatchingVariant = () => {
-    console.log('🔍 findMatchingVariant called with:', {
+    console.log('ЁЯФН findMatchingVariant called with:', {
       selectedSeries,
       selectedColor,
       selectedStorage,
       totalVariants: variants.length,
     });
 
-    // Используем все варианты для поиска, не фильтруем заранее
+    // ╨Ш╤Б╨┐╨╛╨╗╤М╨╖╤Г╨╡╨╝ ╨▓╤Б╨╡ ╨▓╨░╤А╨╕╨░╨╜╤В╤Л ╨┤╨╗╤П ╨┐╨╛╨╕╤Б╨║╨░, ╨╜╨╡ ╤Д╨╕╨╗╤М╤В╤А╤Г╨╡╨╝ ╨╖╨░╤А╨░╨╜╨╡╨╡
     const allVariants = variants.filter((v: Variant) => v.available);
     
-    // ПРИОРИТЕТ 1: Ищем точное совпадение - серия + цвет + память
+    // ╨Я╨а╨Ш╨Ю╨а╨Ш╨в╨Х╨в 1: ╨Ш╤Й╨╡╨╝ ╤В╨╛╤З╨╜╨╛╨╡ ╤Б╨╛╨▓╨┐╨░╨┤╨╡╨╜╨╕╨╡ - ╤Б╨╡╤А╨╕╤П + ╤Ж╨▓╨╡╤В + ╨┐╨░╨╝╤П╤В╤М
     if (isIPhone && selectedSeries && selectedColor && selectedStorage) {
       const exactMatch = allVariants.find((v: Variant) => 
         v.model === selectedSeries && 
@@ -199,108 +199,108 @@ export default function VariantSelector({
         v.storage === selectedStorage
       );
       if (exactMatch) {
-        console.log('✅ Found exact match (series+color+storage):', exactMatch.id);
+        console.log('тЬЕ Found exact match (series+color+storage):', exactMatch.id);
         return exactMatch;
       }
     }
 
-    // ПРИОРИТЕТ 2: Ищем вариант с цветом И памятью (без учета серии)
-    // КРИТИЧНО: при изменении памяти сохраняем цвет, при изменении цвета - память
+    // ╨Я╨а╨Ш╨Ю╨а╨Ш╨в╨Х╨в 2: ╨Ш╤Й╨╡╨╝ ╨▓╨░╤А╨╕╨░╨╜╤В ╤Б ╤Ж╨▓╨╡╤В╨╛╨╝ ╨Ш ╨┐╨░╨╝╤П╤В╤М╤О (╨▒╨╡╨╖ ╤Г╤З╨╡╤В╨░ ╤Б╨╡╤А╨╕╨╕)
+    // ╨Ъ╨а╨Ш╨в╨Ш╨з╨Э╨Ю: ╨┐╤А╨╕ ╨╕╨╖╨╝╨╡╨╜╨╡╨╜╨╕╨╕ ╨┐╨░╨╝╤П╤В╨╕ ╤Б╨╛╤Е╤А╨░╨╜╤П╨╡╨╝ ╤Ж╨▓╨╡╤В, ╨┐╤А╨╕ ╨╕╨╖╨╝╨╡╨╜╨╡╨╜╨╕╨╕ ╤Ж╨▓╨╡╤В╨░ - ╨┐╨░╨╝╤П╤В╤М
     if (selectedColor && selectedStorage) {
-      // Сначала ищем точное совпадение цвета и памяти
+      // ╨б╨╜╨░╤З╨░╨╗╨░ ╨╕╤Й╨╡╨╝ ╤В╨╛╤З╨╜╨╛╨╡ ╤Б╨╛╨▓╨┐╨░╨┤╨╡╨╜╨╕╨╡ ╤Ж╨▓╨╡╤В╨░ ╨╕ ╨┐╨░╨╝╤П╤В╨╕
       const colorStorageMatch = allVariants.find((v: Variant) => 
         v.color === selectedColor && 
         v.storage === selectedStorage
       );
       if (colorStorageMatch) {
-        console.log('✅ Found color+storage match:', colorStorageMatch.id, 'color:', colorStorageMatch.color, 'storage:', colorStorageMatch.storage);
+        console.log('тЬЕ Found color+storage match:', colorStorageMatch.id, 'color:', colorStorageMatch.color, 'storage:', colorStorageMatch.storage);
         return colorStorageMatch;
       }
       
-      // Если точное совпадение не найдено, ищем вариант с правильной памятью (для правильного priceModifier)
-      // ПРИОРИТЕТ: память важнее для цены, чем цвет
+      // ╨Х╤Б╨╗╨╕ ╤В╨╛╤З╨╜╨╛╨╡ ╤Б╨╛╨▓╨┐╨░╨┤╨╡╨╜╨╕╨╡ ╨╜╨╡ ╨╜╨░╨╣╨┤╨╡╨╜╨╛, ╨╕╤Й╨╡╨╝ ╨▓╨░╤А╨╕╨░╨╜╤В ╤Б ╨┐╤А╨░╨▓╨╕╨╗╤М╨╜╨╛╨╣ ╨┐╨░╨╝╤П╤В╤М╤О (╨┤╨╗╤П ╨┐╤А╨░╨▓╨╕╨╗╤М╨╜╨╛╨│╨╛ priceModifier)
+      // ╨Я╨а╨Ш╨Ю╨а╨Ш╨в╨Х╨в: ╨┐╨░╨╝╤П╤В╤М ╨▓╨░╨╢╨╜╨╡╨╡ ╨┤╨╗╤П ╤Ж╨╡╨╜╤Л, ╤З╨╡╨╝ ╤Ж╨▓╨╡╤В
       const storageMatch = allVariants.find((v: Variant) => v.storage === selectedStorage);
       if (storageMatch) {
-        console.log('✅ Found storage match (fallback), will use selected color:', selectedColor);
-        // Вариант с правильной памятью найден, цвет будет заменен в displayVariant
+        console.log('тЬЕ Found storage match (fallback), will use selected color:', selectedColor);
+        // ╨Т╨░╤А╨╕╨░╨╜╤В ╤Б ╨┐╤А╨░╨▓╨╕╨╗╤М╨╜╨╛╨╣ ╨┐╨░╨╝╤П╤В╤М╤О ╨╜╨░╨╣╨┤╨╡╨╜, ╤Ж╨▓╨╡╤В ╨▒╤Г╨┤╨╡╤В ╨╖╨░╨╝╨╡╨╜╨╡╨╜ ╨▓ displayVariant
         return storageMatch;
       }
       
-      // Если не нашли по памяти, пробуем найти вариант с выбранным цветом
+      // ╨Х╤Б╨╗╨╕ ╨╜╨╡ ╨╜╨░╤И╨╗╨╕ ╨┐╨╛ ╨┐╨░╨╝╤П╤В╨╕, ╨┐╤А╨╛╨▒╤Г╨╡╨╝ ╨╜╨░╨╣╤В╨╕ ╨▓╨░╤А╨╕╨░╨╜╤В ╤Б ╨▓╤Л╨▒╤А╨░╨╜╨╜╤Л╨╝ ╤Ж╨▓╨╡╤В╨╛╨╝
       const colorMatch = allVariants.find((v: Variant) => v.color === selectedColor);
       if (colorMatch) {
-        console.log('✅ Found color match (fallback), will use selected storage:', selectedStorage);
-        // Вариант с правильным цветом найден, память будет заменена в displayVariant
+        console.log('тЬЕ Found color match (fallback), will use selected storage:', selectedStorage);
+        // ╨Т╨░╤А╨╕╨░╨╜╤В ╤Б ╨┐╤А╨░╨▓╨╕╨╗╤М╨╜╤Л╨╝ ╤Ж╨▓╨╡╤В╨╛╨╝ ╨╜╨░╨╣╨┤╨╡╨╜, ╨┐╨░╨╝╤П╤В╤М ╨▒╤Г╨┤╨╡╤В ╨╖╨░╨╝╨╡╨╜╨╡╨╜╨░ ╨▓ displayVariant
         return colorMatch;
       }
     }
 
 
-    // ПРИОРИТЕТ 3: Для iPhone - вариант с серией, цветом и памятью (если память еще не выбрана)
+    // ╨Я╨а╨Ш╨Ю╨а╨Ш╨в╨Х╨в 3: ╨Ф╨╗╤П iPhone - ╨▓╨░╤А╨╕╨░╨╜╤В ╤Б ╤Б╨╡╤А╨╕╨╡╨╣, ╤Ж╨▓╨╡╤В╨╛╨╝ ╨╕ ╨┐╨░╨╝╤П╤В╤М╤О (╨╡╤Б╨╗╨╕ ╨┐╨░╨╝╤П╤В╤М ╨╡╤Й╨╡ ╨╜╨╡ ╨▓╤Л╨▒╤А╨░╨╜╨░)
     if (isIPhone && selectedSeries && selectedColor && !selectedStorage) {
       const seriesColorMatch = allVariants.find((v: Variant) => 
         v.model === selectedSeries && 
         v.color === selectedColor
       );
       if (seriesColorMatch) {
-        console.log('✅ Found series+color match:', seriesColorMatch.id);
+        console.log('тЬЕ Found series+color match:', seriesColorMatch.id);
         return seriesColorMatch;
       }
     }
 
-    // ПРИОРИТЕТ 4: Для iPhone - вариант с серией и памятью (если цвет еще не выбран)
+    // ╨Я╨а╨Ш╨Ю╨а╨Ш╨в╨Х╨в 4: ╨Ф╨╗╤П iPhone - ╨▓╨░╤А╨╕╨░╨╜╤В ╤Б ╤Б╨╡╤А╨╕╨╡╨╣ ╨╕ ╨┐╨░╨╝╤П╤В╤М╤О (╨╡╤Б╨╗╨╕ ╤Ж╨▓╨╡╤В ╨╡╤Й╨╡ ╨╜╨╡ ╨▓╤Л╨▒╤А╨░╨╜)
     if (isIPhone && selectedSeries && selectedStorage && !selectedColor) {
       const seriesStorageMatch = allVariants.find((v: Variant) => 
         v.model === selectedSeries && 
         v.storage === selectedStorage
       );
       if (seriesStorageMatch) {
-        console.log('✅ Found series+storage match:', seriesStorageMatch.id);
+        console.log('тЬЕ Found series+storage match:', seriesStorageMatch.id);
         return seriesStorageMatch;
       }
     }
 
-    // ПРИОРИТЕТ 5: Вариант с выбранным цветом (только если память не выбрана)
-    // НЕ ищем по памяти отдельно, чтобы не менять цвет при выборе памяти
+    // ╨Я╨а╨Ш╨Ю╨а╨Ш╨в╨Х╨в 5: ╨Т╨░╤А╨╕╨░╨╜╤В ╤Б ╨▓╤Л╨▒╤А╨░╨╜╨╜╤Л╨╝ ╤Ж╨▓╨╡╤В╨╛╨╝ (╤В╨╛╨╗╤М╨║╨╛ ╨╡╤Б╨╗╨╕ ╨┐╨░╨╝╤П╤В╤М ╨╜╨╡ ╨▓╤Л╨▒╤А╨░╨╜╨░)
+    // ╨Э╨Х ╨╕╤Й╨╡╨╝ ╨┐╨╛ ╨┐╨░╨╝╤П╤В╨╕ ╨╛╤В╨┤╨╡╨╗╤М╨╜╨╛, ╤З╤В╨╛╨▒╤Л ╨╜╨╡ ╨╝╨╡╨╜╤П╤В╤М ╤Ж╨▓╨╡╤В ╨┐╤А╨╕ ╨▓╤Л╨▒╨╛╤А╨╡ ╨┐╨░╨╝╤П╤В╨╕
     if (selectedColor && !selectedStorage) {
       const colorMatch = allVariants.find((v: Variant) => v.color === selectedColor);
       if (colorMatch) {
-        console.log('✅ Found color match:', colorMatch.id);
+        console.log('тЬЕ Found color match:', colorMatch.id);
         return colorMatch;
       }
     }
 
-    // ПРИОРИТЕТ 6: Вариант с выбранной памятью (только если цвет НЕ выбран)
-    // Если цвет выбран, но вариант с color+storage не найден - НЕ меняем цвет на другой
+    // ╨Я╨а╨Ш╨Ю╨а╨Ш╨в╨Х╨в 6: ╨Т╨░╤А╨╕╨░╨╜╤В ╤Б ╨▓╤Л╨▒╤А╨░╨╜╨╜╨╛╨╣ ╨┐╨░╨╝╤П╤В╤М╤О (╤В╨╛╨╗╤М╨║╨╛ ╨╡╤Б╨╗╨╕ ╤Ж╨▓╨╡╤В ╨Э╨Х ╨▓╤Л╨▒╤А╨░╨╜)
+    // ╨Х╤Б╨╗╨╕ ╤Ж╨▓╨╡╤В ╨▓╤Л╨▒╤А╨░╨╜, ╨╜╨╛ ╨▓╨░╤А╨╕╨░╨╜╤В ╤Б color+storage ╨╜╨╡ ╨╜╨░╨╣╨┤╨╡╨╜ - ╨Э╨Х ╨╝╨╡╨╜╤П╨╡╨╝ ╤Ж╨▓╨╡╤В ╨╜╨░ ╨┤╤А╤Г╨│╨╛╨╣
     if (selectedStorage && !selectedColor) {
       const storageMatch = allVariants.find((v: Variant) => v.storage === selectedStorage);
       if (storageMatch) {
-        console.log('✅ Found storage match (no color selected):', storageMatch.id);
+        console.log('тЬЕ Found storage match (no color selected):', storageMatch.id);
         return storageMatch;
       }
     }
 
-    // ПРИОРИТЕТ 7: Для iPhone - вариант с выбранной серией
+    // ╨Я╨а╨Ш╨Ю╨а╨Ш╨в╨Х╨в 7: ╨Ф╨╗╤П iPhone - ╨▓╨░╤А╨╕╨░╨╜╤В ╤Б ╨▓╤Л╨▒╤А╨░╨╜╨╜╨╛╨╣ ╤Б╨╡╤А╨╕╨╡╨╣
     if (isIPhone && selectedSeries) {
       const seriesMatch = allVariants.find((v: Variant) => v.model === selectedSeries);
       if (seriesMatch) {
-        console.log('✅ Found series match:', seriesMatch.id);
+        console.log('тЬЕ Found series match:', seriesMatch.id);
         return seriesMatch;
       }
     }
 
-    // Последний вариант - любой доступный
+    // ╨Я╨╛╤Б╨╗╨╡╨┤╨╜╨╕╨╣ ╨▓╨░╤А╨╕╨░╨╜╤В - ╨╗╤О╨▒╨╛╨╣ ╨┤╨╛╤Б╤В╤Г╨┐╨╜╤Л╨╣
     const result = allVariants[0] || null;
     if (result) {
-      console.log('✅ Found fallback variant:', result.id);
+      console.log('тЬЕ Found fallback variant:', result.id);
     } else {
-      console.warn('❌ No variant found at all');
+      console.warn('тЭМ No variant found at all');
     }
     return result;
   };
 
   useEffect(() => {
-    // Пропускаем если ничего не выбрано (для iPhone нужна серия, для других - нет)
+    // ╨Я╤А╨╛╨┐╤Г╤Б╨║╨░╨╡╨╝ ╨╡╤Б╨╗╨╕ ╨╜╨╕╤З╨╡╨│╨╛ ╨╜╨╡ ╨▓╤Л╨▒╤А╨░╨╜╨╛ (╨┤╨╗╤П iPhone ╨╜╤Г╨╢╨╜╨░ ╤Б╨╡╤А╨╕╤П, ╨┤╨╗╤П ╨┤╤А╤Г╨│╨╕╤Е - ╨╜╨╡╤В)
     if (isIPhone && series.length > 0 && !selectedSeries && !selectedColor && !selectedStorage) {
       return;
     }
@@ -310,11 +310,11 @@ export default function VariantSelector({
 
     const variant = findMatchingVariant();
     if (variant) {
-      // Для iPhone: если найденный вариант имеет другую серию, создаем "виртуальный" вариант
-      // с правильной серией для отображения названия ТОЛЬКО если выбранная серия существует в вариантах
-      // ВАЖНО: сохраняем color и storage из реального варианта
-      // КРИТИЧНО: Сохраняем priceModifier из варианта
-      // Используем variants для доступа к полному priceModifier
+      // ╨Ф╨╗╤П iPhone: ╨╡╤Б╨╗╨╕ ╨╜╨░╨╣╨┤╨╡╨╜╨╜╤Л╨╣ ╨▓╨░╤А╨╕╨░╨╜╤В ╨╕╨╝╨╡╨╡╤В ╨┤╤А╤Г╨│╤Г╤О ╤Б╨╡╤А╨╕╤О, ╤Б╨╛╨╖╨┤╨░╨╡╨╝ "╨▓╨╕╤А╤В╤Г╨░╨╗╤М╨╜╤Л╨╣" ╨▓╨░╤А╨╕╨░╨╜╤В
+      // ╤Б ╨┐╤А╨░╨▓╨╕╨╗╤М╨╜╨╛╨╣ ╤Б╨╡╤А╨╕╨╡╨╣ ╨┤╨╗╤П ╨╛╤В╨╛╨▒╤А╨░╨╢╨╡╨╜╨╕╤П ╨╜╨░╨╖╨▓╨░╨╜╨╕╤П ╨в╨Ю╨Ы╨м╨Ъ╨Ю ╨╡╤Б╨╗╨╕ ╨▓╤Л╨▒╤А╨░╨╜╨╜╨░╤П ╤Б╨╡╤А╨╕╤П ╤Б╤Г╤Й╨╡╤Б╤В╨▓╤Г╨╡╤В ╨▓ ╨▓╨░╤А╨╕╨░╨╜╤В╨░╤Е
+      // ╨Т╨Р╨Ц╨Э╨Ю: ╤Б╨╛╤Е╤А╨░╨╜╤П╨╡╨╝ color ╨╕ storage ╨╕╨╖ ╤А╨╡╨░╨╗╤М╨╜╨╛╨│╨╛ ╨▓╨░╤А╨╕╨░╨╜╤В╨░
+      // ╨Ъ╨а╨Ш╨в╨Ш╨з╨Э╨Ю: ╨б╨╛╤Е╤А╨░╨╜╤П╨╡╨╝ priceModifier ╨╕╨╖ ╨▓╨░╤А╨╕╨░╨╜╤В╨░
+      // ╨Ш╤Б╨┐╨╛╨╗╤М╨╖╤Г╨╡╨╝ variants ╨┤╨╗╤П ╨┤╨╛╤Б╤В╤Г╨┐╨░ ╨║ ╨┐╨╛╨╗╨╜╨╛╨╝╤Г priceModifier
       const fullVariant = variants.find((v: Variant) => v.id === variant.id);
       interface VariantWithPriceModifier extends Variant {
         priceModifier?: number;
@@ -326,11 +326,11 @@ export default function VariantSelector({
         priceModifier: fullVariantTyped?.priceModifier ?? variantTyped.priceModifier ?? 0,
       };
       if (isIPhone && selectedSeries && variant.model !== selectedSeries) {
-        // Проверяем, что выбранная серия действительно существует в вариантах
+        // ╨Я╤А╨╛╨▓╨╡╤А╤П╨╡╨╝, ╤З╤В╨╛ ╨▓╤Л╨▒╤А╨░╨╜╨╜╨░╤П ╤Б╨╡╤А╨╕╤П ╨┤╨╡╨╣╤Б╤В╨▓╨╕╤В╨╡╨╗╤М╨╜╨╛ ╤Б╤Г╤Й╨╡╤Б╤В╨▓╤Г╨╡╤В ╨▓ ╨▓╨░╤А╨╕╨░╨╜╤В╨░╤Е
         const seriesExists = variants.some((v: Variant) => v.model === selectedSeries);
         if (seriesExists) {
-          // Сохраняем все поля из реального варианта, особенно color, storage и priceModifier
-          // КРИТИЧНО: Используем полный вариант из variants для доступа к priceModifier
+          // ╨б╨╛╤Е╤А╨░╨╜╤П╨╡╨╝ ╨▓╤Б╨╡ ╨┐╨╛╨╗╤П ╨╕╨╖ ╤А╨╡╨░╨╗╤М╨╜╨╛╨│╨╛ ╨▓╨░╤А╨╕╨░╨╜╤В╨░, ╨╛╤Б╨╛╨▒╨╡╨╜╨╜╨╛ color, storage ╨╕ priceModifier
+          // ╨Ъ╨а╨Ш╨в╨Ш╨з╨Э╨Ю: ╨Ш╤Б╨┐╨╛╨╗╤М╨╖╤Г╨╡╨╝ ╨┐╨╛╨╗╨╜╤Л╨╣ ╨▓╨░╤А╨╕╨░╨╜╤В ╨╕╨╖ variants ╨┤╨╗╤П ╨┤╨╛╤Б╤В╤Г╨┐╨░ ╨║ priceModifier
           const fullVariantForSeries = variants.find((v: Variant) => v.id === variant.id) as VariantWithPriceModifier | undefined;
           displayVariant = { 
             ...variant,
@@ -340,30 +340,30 @@ export default function VariantSelector({
         }
       }
       
-      // КРИТИЧНО: Если выбран цвет И память, но вариант с ними не найден (fallback),
-      // заменяем color и storage в displayVariant на выбранные значения
-      // Это позволяет выбирать любые цвета при любой памяти
-      // НО: если вариант найден с правильным цветом или памятью, не меняем их
+      // ╨Ъ╨а╨Ш╨в╨Ш╨з╨Э╨Ю: ╨Х╤Б╨╗╨╕ ╨▓╤Л╨▒╤А╨░╨╜ ╤Ж╨▓╨╡╤В ╨Ш ╨┐╨░╨╝╤П╤В╤М, ╨╜╨╛ ╨▓╨░╤А╨╕╨░╨╜╤В ╤Б ╨╜╨╕╨╝╨╕ ╨╜╨╡ ╨╜╨░╨╣╨┤╨╡╨╜ (fallback),
+      // ╨╖╨░╨╝╨╡╨╜╤П╨╡╨╝ color ╨╕ storage ╨▓ displayVariant ╨╜╨░ ╨▓╤Л╨▒╤А╨░╨╜╨╜╤Л╨╡ ╨╖╨╜╨░╤З╨╡╨╜╨╕╤П
+      // ╨н╤В╨╛ ╨┐╨╛╨╖╨▓╨╛╨╗╤П╨╡╤В ╨▓╤Л╨▒╨╕╤А╨░╤В╤М ╨╗╤О╨▒╤Л╨╡ ╤Ж╨▓╨╡╤В╨░ ╨┐╤А╨╕ ╨╗╤О╨▒╨╛╨╣ ╨┐╨░╨╝╤П╤В╨╕
+      // ╨Э╨Ю: ╨╡╤Б╨╗╨╕ ╨▓╨░╤А╨╕╨░╨╜╤В ╨╜╨░╨╣╨┤╨╡╨╜ ╤Б ╨┐╤А╨░╨▓╨╕╨╗╤М╨╜╤Л╨╝ ╤Ж╨▓╨╡╤В╨╛╨╝ ╨╕╨╗╨╕ ╨┐╨░╨╝╤П╤В╤М╤О, ╨╜╨╡ ╨╝╨╡╨╜╤П╨╡╨╝ ╨╕╤Е
       if (selectedColor && selectedStorage) {
-        // Если память в варианте не совпадает с выбранной - заменяем на выбранную
-        // КРИТИЧНО: Нужно также обновить priceModifier для правильной памяти
+        // ╨Х╤Б╨╗╨╕ ╨┐╨░╨╝╤П╤В╤М ╨▓ ╨▓╨░╤А╨╕╨░╨╜╤В╨╡ ╨╜╨╡ ╤Б╨╛╨▓╨┐╨░╨┤╨░╨╡╤В ╤Б ╨▓╤Л╨▒╤А╨░╨╜╨╜╨╛╨╣ - ╨╖╨░╨╝╨╡╨╜╤П╨╡╨╝ ╨╜╨░ ╨▓╤Л╨▒╤А╨░╨╜╨╜╤Г╤О
+        // ╨Ъ╨а╨Ш╨в╨Ш╨з╨Э╨Ю: ╨Э╤Г╨╢╨╜╨╛ ╤В╨░╨║╨╢╨╡ ╨╛╨▒╨╜╨╛╨▓╨╕╤В╤М priceModifier ╨┤╨╗╤П ╨┐╤А╨░╨▓╨╕╨╗╤М╨╜╨╛╨╣ ╨┐╨░╨╝╤П╤В╨╕
         if (displayVariant.storage !== selectedStorage) {
-          // Ищем вариант с правильной памятью для получения priceModifier
-          // Используем variants (не allVariants), чтобы получить доступ к priceModifier
+          // ╨Ш╤Й╨╡╨╝ ╨▓╨░╤А╨╕╨░╨╜╤В ╤Б ╨┐╤А╨░╨▓╨╕╨╗╤М╨╜╨╛╨╣ ╨┐╨░╨╝╤П╤В╤М╤О ╨┤╨╗╤П ╨┐╨╛╨╗╤Г╤З╨╡╨╜╨╕╤П priceModifier
+          // ╨Ш╤Б╨┐╨╛╨╗╤М╨╖╤Г╨╡╨╝ variants (╨╜╨╡ allVariants), ╤З╤В╨╛╨▒╤Л ╨┐╨╛╨╗╤Г╤З╨╕╤В╤М ╨┤╨╛╤Б╤В╤Г╨┐ ╨║ priceModifier
           const storageVariant = variants.find((v: Variant) => 
             v.available && 
             v.storage === selectedStorage &&
-            (v.color === selectedColor || !selectedColor) // Предпочтительно с выбранным цветом
+            (v.color === selectedColor || !selectedColor) // ╨Я╤А╨╡╨┤╨┐╨╛╤З╤В╨╕╤В╨╡╨╗╤М╨╜╨╛ ╤Б ╨▓╤Л╨▒╤А╨░╨╜╨╜╤Л╨╝ ╤Ж╨▓╨╡╤В╨╛╨╝
           ) || variants.find((v: Variant) => v.available && v.storage === selectedStorage);
           
-          // Получаем priceModifier из варианта с правильной памятью
-          // КРИТИЧНО: Используем полный вариант из variants для доступа к priceModifier
-          // Сначала ищем вариант с правильной памятью (для получения priceModifier)
+          // ╨Я╨╛╨╗╤Г╤З╨░╨╡╨╝ priceModifier ╨╕╨╖ ╨▓╨░╤А╨╕╨░╨╜╤В╨░ ╤Б ╨┐╤А╨░╨▓╨╕╨╗╤М╨╜╨╛╨╣ ╨┐╨░╨╝╤П╤В╤М╤О
+          // ╨Ъ╨а╨Ш╨в╨Ш╨з╨Э╨Ю: ╨Ш╤Б╨┐╨╛╨╗╤М╨╖╤Г╨╡╨╝ ╨┐╨╛╨╗╨╜╤Л╨╣ ╨▓╨░╤А╨╕╨░╨╜╤В ╨╕╨╖ variants ╨┤╨╗╤П ╨┤╨╛╤Б╤В╤Г╨┐╨░ ╨║ priceModifier
+          // ╨б╨╜╨░╤З╨░╨╗╨░ ╨╕╤Й╨╡╨╝ ╨▓╨░╤А╨╕╨░╨╜╤В ╤Б ╨┐╤А╨░╨▓╨╕╨╗╤М╨╜╨╛╨╣ ╨┐╨░╨╝╤П╤В╤М╤О (╨┤╨╗╤П ╨┐╨╛╨╗╤Г╤З╨╡╨╜╨╕╤П priceModifier)
           const fullStorageVariant = storageVariant ? variants.find((v: Variant) => v.id === storageVariant.id) as VariantWithPriceModifier | undefined : null;
           const fullVariant = variants.find((v: Variant) => v.id === variant.id) as VariantWithPriceModifier | undefined;
           
-          // КРИТИЧНО: Получаем priceModifier из варианта с правильной памятью (1 ТБ)
-          // Используем логику: 256GB = 0, 512GB = 200, 1TB = 500
+          // ╨Ъ╨а╨Ш╨в╨Ш╨з╨Э╨Ю: ╨Я╨╛╨╗╤Г╤З╨░╨╡╨╝ priceModifier ╨╕╨╖ ╨▓╨░╤А╨╕╨░╨╜╤В╨░ ╤Б ╨┐╤А╨░╨▓╨╕╨╗╤М╨╜╨╛╨╣ ╨┐╨░╨╝╤П╤В╤М╤О (1 ╨в╨С)
+          // ╨Ш╤Б╨┐╨╛╨╗╤М╨╖╤Г╨╡╨╝ ╨╗╨╛╨│╨╕╨║╤Г: 256GB = 0, 512GB = 200, 1TB = 500
           let priceModifier = 0;
           if (selectedStorage === '1TB') {
             priceModifier = 500;
@@ -372,16 +372,16 @@ export default function VariantSelector({
           } else if (selectedStorage === '256GB') {
             priceModifier = 0;
           } else {
-            // Если не определили из selectedStorage, берем из варианта
+            // ╨Х╤Б╨╗╨╕ ╨╜╨╡ ╨╛╨┐╤А╨╡╨┤╨╡╨╗╨╕╨╗╨╕ ╨╕╨╖ selectedStorage, ╨▒╨╡╤А╨╡╨╝ ╨╕╨╖ ╨▓╨░╤А╨╕╨░╨╜╤В╨░
             priceModifier = fullStorageVariant?.priceModifier ?? fullVariant?.priceModifier ?? variantTyped.priceModifier ?? displayVariant.priceModifier ?? 0;
           }
           
           displayVariant = {
             ...displayVariant,
             storage: selectedStorage,
-            priceModifier: priceModifier, // Обновляем priceModifier для правильной памяти
+            priceModifier: priceModifier, // ╨Ю╨▒╨╜╨╛╨▓╨╗╤П╨╡╨╝ priceModifier ╨┤╨╗╤П ╨┐╤А╨░╨▓╨╕╨╗╤М╨╜╨╛╨╣ ╨┐╨░╨╝╤П╤В╨╕
           };
-          console.log('✅ Using selected storage in displayVariant:', {
+          console.log('тЬЕ Using selected storage in displayVariant:', {
             selectedStorage,
             variantStorage: variant.storage,
             priceModifier: priceModifier,
@@ -391,36 +391,36 @@ export default function VariantSelector({
           });
         }
         
-        // Если цвет в варианте не совпадает с выбранным - заменяем на выбранный
+        // ╨Х╤Б╨╗╨╕ ╤Ж╨▓╨╡╤В ╨▓ ╨▓╨░╤А╨╕╨░╨╜╤В╨╡ ╨╜╨╡ ╤Б╨╛╨▓╨┐╨░╨┤╨░╨╡╤В ╤Б ╨▓╤Л╨▒╤А╨░╨╜╨╜╤Л╨╝ - ╨╖╨░╨╝╨╡╨╜╤П╨╡╨╝ ╨╜╨░ ╨▓╤Л╨▒╤А╨░╨╜╨╜╤Л╨╣
         if (displayVariant.color !== selectedColor) {
           displayVariant = {
             ...displayVariant,
             color: selectedColor,
           };
-          console.log('✅ Using selected color in displayVariant:', {
+          console.log('тЬЕ Using selected color in displayVariant:', {
             selectedColor,
             variantColor: variant.color,
           });
         }
       }
       
-      // КРИТИЧНО: Синхронизируем состояние выбора с найденным вариантом
-      // Но только если это не приведет к изменению явно выбранных параметров
-      // Обновляем только если пользователь явно не выбрал другой цвет/память
+      // ╨Ъ╨а╨Ш╨в╨Ш╨з╨Э╨Ю: ╨б╨╕╨╜╤Е╤А╨╛╨╜╨╕╨╖╨╕╤А╤Г╨╡╨╝ ╤Б╨╛╤Б╤В╨╛╤П╨╜╨╕╨╡ ╨▓╤Л╨▒╨╛╤А╨░ ╤Б ╨╜╨░╨╣╨┤╨╡╨╜╨╜╤Л╨╝ ╨▓╨░╤А╨╕╨░╨╜╤В╨╛╨╝
+      // ╨Э╨╛ ╤В╨╛╨╗╤М╨║╨╛ ╨╡╤Б╨╗╨╕ ╤Н╤В╨╛ ╨╜╨╡ ╨┐╤А╨╕╨▓╨╡╨┤╨╡╤В ╨║ ╨╕╨╖╨╝╨╡╨╜╨╡╨╜╨╕╤О ╤П╨▓╨╜╨╛ ╨▓╤Л╨▒╤А╨░╨╜╨╜╤Л╤Е ╨┐╨░╤А╨░╨╝╨╡╤В╤А╨╛╨▓
+      // ╨Ю╨▒╨╜╨╛╨▓╨╗╤П╨╡╨╝ ╤В╨╛╨╗╤М╨║╨╛ ╨╡╤Б╨╗╨╕ ╨┐╨╛╨╗╤М╨╖╨╛╨▓╨░╤В╨╡╨╗╤М ╤П╨▓╨╜╨╛ ╨╜╨╡ ╨▓╤Л╨▒╤А╨░╨╗ ╨┤╤А╤Г╨│╨╛╨╣ ╤Ж╨▓╨╡╤В/╨┐╨░╨╝╤П╤В╤М
       
-      // КРИТИЧНО: Сохраняем выбранные цвет и память в состоянии
-      // Не обновляем selectedColor и selectedStorage из варианта, если они были явно выбраны пользователем
-      // Это позволяет выбирать цвета, даже если точный вариант не существует
+      // ╨Ъ╨а╨Ш╨в╨Ш╨з╨Э╨Ю: ╨б╨╛╤Е╤А╨░╨╜╤П╨╡╨╝ ╨▓╤Л╨▒╤А╨░╨╜╨╜╤Л╨╡ ╤Ж╨▓╨╡╤В ╨╕ ╨┐╨░╨╝╤П╤В╤М ╨▓ ╤Б╨╛╤Б╤В╨╛╤П╨╜╨╕╨╕
+      // ╨Э╨╡ ╨╛╨▒╨╜╨╛╨▓╨╗╤П╨╡╨╝ selectedColor ╨╕ selectedStorage ╨╕╨╖ ╨▓╨░╤А╨╕╨░╨╜╤В╨░, ╨╡╤Б╨╗╨╕ ╨╛╨╜╨╕ ╨▒╤Л╨╗╨╕ ╤П╨▓╨╜╨╛ ╨▓╤Л╨▒╤А╨░╨╜╤Л ╨┐╨╛╨╗╤М╨╖╨╛╨▓╨░╤В╨╡╨╗╨╡╨╝
+      // ╨н╤В╨╛ ╨┐╨╛╨╖╨▓╨╛╨╗╤П╨╡╤В ╨▓╤Л╨▒╨╕╤А╨░╤В╤М ╤Ж╨▓╨╡╤В╨░, ╨┤╨░╨╢╨╡ ╨╡╤Б╨╗╨╕ ╤В╨╛╤З╨╜╤Л╨╣ ╨▓╨░╤А╨╕╨░╨╜╤В ╨╜╨╡ ╤Б╤Г╤Й╨╡╤Б╤В╨▓╤Г╨╡╤В
       
-      // Обновляем цвет только если он не был явно выбран пользователем
-      // (т.е. если selectedColor был null или совпадает с выбранным цветом)
-      // НЕ обновляем, если пользователь выбрал другой цвет
+      // ╨Ю╨▒╨╜╨╛╨▓╨╗╤П╨╡╨╝ ╤Ж╨▓╨╡╤В ╤В╨╛╨╗╤М╨║╨╛ ╨╡╤Б╨╗╨╕ ╨╛╨╜ ╨╜╨╡ ╨▒╤Л╨╗ ╤П╨▓╨╜╨╛ ╨▓╤Л╨▒╤А╨░╨╜ ╨┐╨╛╨╗╤М╨╖╨╛╨▓╨░╤В╨╡╨╗╨╡╨╝
+      // (╤В.╨╡. ╨╡╤Б╨╗╨╕ selectedColor ╨▒╤Л╨╗ null ╨╕╨╗╨╕ ╤Б╨╛╨▓╨┐╨░╨┤╨░╨╡╤В ╤Б ╨▓╤Л╨▒╤А╨░╨╜╨╜╤Л╨╝ ╤Ж╨▓╨╡╤В╨╛╨╝)
+      // ╨Э╨Х ╨╛╨▒╨╜╨╛╨▓╨╗╤П╨╡╨╝, ╨╡╤Б╨╗╨╕ ╨┐╨╛╨╗╤М╨╖╨╛╨▓╨░╤В╨╡╨╗╤М ╨▓╤Л╨▒╤А╨░╨╗ ╨┤╤А╤Г╨│╨╛╨╣ ╤Ж╨▓╨╡╤В
       
-      // Обновляем память только если она не была явно выбрана пользователем
-      // (т.е. если selectedStorage был null или совпадает с выбранной памятью)
-      // НЕ обновляем, если пользователь выбрал другую память
+      // ╨Ю╨▒╨╜╨╛╨▓╨╗╤П╨╡╨╝ ╨┐╨░╨╝╤П╤В╤М ╤В╨╛╨╗╤М╨║╨╛ ╨╡╤Б╨╗╨╕ ╨╛╨╜╨░ ╨╜╨╡ ╨▒╤Л╨╗╨░ ╤П╨▓╨╜╨╛ ╨▓╤Л╨▒╤А╨░╨╜╨░ ╨┐╨╛╨╗╤М╨╖╨╛╨▓╨░╤В╨╡╨╗╨╡╨╝
+      // (╤В.╨╡. ╨╡╤Б╨╗╨╕ selectedStorage ╨▒╤Л╨╗ null ╨╕╨╗╨╕ ╤Б╨╛╨▓╨┐╨░╨┤╨░╨╡╤В ╤Б ╨▓╤Л╨▒╤А╨░╨╜╨╜╨╛╨╣ ╨┐╨░╨╝╤П╤В╤М╤О)
+      // ╨Э╨Х ╨╛╨▒╨╜╨╛╨▓╨╗╤П╨╡╨╝, ╨╡╤Б╨╗╨╕ ╨┐╨╛╨╗╤М╨╖╨╛╨▓╨░╤В╨╡╨╗╤М ╨▓╤Л╨▒╤А╨░╨╗ ╨┤╤А╤Г╨│╤Г╤О ╨┐╨░╨╝╤П╤В╤М
       
-      console.log('🔄 Changing variant:', {
+      console.log('ЁЯФД Changing variant:', {
         from: selectedVariant?.id,
         to: variant.id,
         actualModel: variant.model,
@@ -433,10 +433,10 @@ export default function VariantSelector({
         selectedStorage,
       });
       
-      // Обновляем вариант
+      // ╨Ю╨▒╨╜╨╛╨▓╨╗╤П╨╡╨╝ ╨▓╨░╤А╨╕╨░╨╜╤В
       onVariantChange(displayVariant);
     } else {
-      console.warn('⚠️ No matching variant found for:', {
+      console.warn('тЪая╕П No matching variant found for:', {
         selectedSeries,
         selectedColor,
         selectedStorage,
@@ -447,29 +447,29 @@ export default function VariantSelector({
   }, [selectedSeries, selectedColor, selectedStorage, isIPhone]);
 
   const isValueAvailable = (type: 'series' | 'color' | 'storage', value: string) => {
-    // Все опции всегда доступны для клика
-    // Но проверяем, существует ли вариант с выбранными параметрами
+    // ╨Т╤Б╨╡ ╨╛╨┐╤Ж╨╕╨╕ ╨▓╤Б╨╡╨│╨┤╨░ ╨┤╨╛╤Б╤В╤Г╨┐╨╜╤Л ╨┤╨╗╤П ╨║╨╗╨╕╨║╨░
+    // ╨Э╨╛ ╨┐╤А╨╛╨▓╨╡╤А╤П╨╡╨╝, ╤Б╤Г╤Й╨╡╤Б╤В╨▓╤Г╨╡╤В ╨╗╨╕ ╨▓╨░╤А╨╕╨░╨╜╤В ╤Б ╨▓╤Л╨▒╤А╨░╨╜╨╜╤Л╨╝╨╕ ╨┐╨░╤А╨░╨╝╨╡╤В╤А╨░╨╝╨╕
     if (type === 'color' && selectedStorage) {
-      // Если память выбрана, проверяем существует ли вариант с этим цветом и памятью
+      // ╨Х╤Б╨╗╨╕ ╨┐╨░╨╝╤П╤В╤М ╨▓╤Л╨▒╤А╨░╨╜╨░, ╨┐╤А╨╛╨▓╨╡╤А╤П╨╡╨╝ ╤Б╤Г╤Й╨╡╤Б╤В╨▓╤Г╨╡╤В ╨╗╨╕ ╨▓╨░╤А╨╕╨░╨╜╤В ╤Б ╤Н╤В╨╕╨╝ ╤Ж╨▓╨╡╤В╨╛╨╝ ╨╕ ╨┐╨░╨╝╤П╤В╤М╤О
       const exists = variants.some((v: Variant) => 
         v.color === value && 
         v.storage === selectedStorage &&
         v.available
       );
-      // Разрешаем выбор, даже если точного варианта нет - используем ближайший
+      // ╨а╨░╨╖╤А╨╡╤И╨░╨╡╨╝ ╨▓╤Л╨▒╨╛╤А, ╨┤╨░╨╢╨╡ ╨╡╤Б╨╗╨╕ ╤В╨╛╤З╨╜╨╛╨│╨╛ ╨▓╨░╤А╨╕╨░╨╜╤В╨░ ╨╜╨╡╤В - ╨╕╤Б╨┐╨╛╨╗╤М╨╖╤Г╨╡╨╝ ╨▒╨╗╨╕╨╢╨░╨╣╤И╨╕╨╣
       return true;
     }
     if (type === 'storage' && selectedColor) {
-      // Если цвет выбран, проверяем существует ли вариант с этим цветом и памятью
+      // ╨Х╤Б╨╗╨╕ ╤Ж╨▓╨╡╤В ╨▓╤Л╨▒╤А╨░╨╜, ╨┐╤А╨╛╨▓╨╡╤А╤П╨╡╨╝ ╤Б╤Г╤Й╨╡╤Б╤В╨▓╤Г╨╡╤В ╨╗╨╕ ╨▓╨░╤А╨╕╨░╨╜╤В ╤Б ╤Н╤В╨╕╨╝ ╤Ж╨▓╨╡╤В╨╛╨╝ ╨╕ ╨┐╨░╨╝╤П╤В╤М╤О
       const exists = variants.some((v: Variant) => 
         v.color === selectedColor && 
         v.storage === value &&
         v.available
       );
-      // Разрешаем выбор, даже если точного варианта нет - используем ближайший
+      // ╨а╨░╨╖╤А╨╡╤И╨░╨╡╨╝ ╨▓╤Л╨▒╨╛╤А, ╨┤╨░╨╢╨╡ ╨╡╤Б╨╗╨╕ ╤В╨╛╤З╨╜╨╛╨│╨╛ ╨▓╨░╤А╨╕╨░╨╜╤В╨░ ╨╜╨╡╤В - ╨╕╤Б╨┐╨╛╨╗╤М╨╖╤Г╨╡╨╝ ╨▒╨╗╨╕╨╢╨░╨╣╤И╨╕╨╣
       return true;
     }
-    // Все опции всегда доступны для клика
+    // ╨Т╤Б╨╡ ╨╛╨┐╤Ж╨╕╨╕ ╨▓╤Б╨╡╨│╨┤╨░ ╨┤╨╛╤Б╤В╤Г╨┐╨╜╤Л ╨┤╨╗╤П ╨║╨╗╨╕╨║╨░
     return true;
   };
 
