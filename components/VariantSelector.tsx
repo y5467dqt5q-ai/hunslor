@@ -102,10 +102,10 @@ export default function VariantSelector({
       }
     }
   });
-  const colors = Array.from(colorMap.values()) as string[];
+  const colors = Array.from(colorMap.values()) as ('256GB' | '512GB' | '1TB')[];
   // ╨Ф╨╗╤П ╨╜╨╛╤Г╤В╨▒╤Г╨║╨╛╨▓ ╨╕ ╤З╨░╤Б╨╛╨▓ ╨╜╨╡ ╨┐╨╛╨║╨░╨╖╤Л╨▓╨░╨╡╨╝ ╨▓╤Л╨▒╨╛╤А ╨┐╨░╨╝╤П╤В╨╕
   // ╨С╨╡╤А╨╡╨╝ ╨┤╨╛╤Б╤В╤Г╨┐╨╜╤Л╨╡ storage ╨╕╨╖ ╨▓╨░╤А╨╕╨░╨╜╤В╨╛╨▓, ╨╡╤Б╨╗╨╕ ╨╛╨╜╨╕ ╨╡╤Б╤В╤М, ╨╕╨╜╨░╤З╨╡ ╨╕╤Б╨┐╨╛╨╗╤М╨╖╤Г╨╡╨╝ ╤Б╤В╨░╨╜╨┤╨░╤А╤В╨╜╤Л╨╣ ╨╜╨░╨▒╨╛╤А
-  const availableStorages = Array.from(new Set(variants.map((v: Variant) => v.storage).filter((s): s is string => Boolean(s)))) as string[];
+  const availableStorages = Array.from(new Set(variants.map((v: Variant) => v.storage).filter((s) => typeof s === 'string'))) as ('256GB' | '512GB' | '1TB')[];
   const storages: ('256GB' | '512GB' | '1TB')[] = hideMemoryStorage 
     ? [] 
     : (availableStorages.length > 0 ? availableStorages as ('256GB' | '512GB' | '1TB')[] : ['256GB', '512GB', '1TB']);
@@ -519,3 +519,5 @@ export default function VariantSelector({
     </div>
   );
 }
+
+
