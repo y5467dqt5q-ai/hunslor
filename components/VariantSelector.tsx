@@ -433,11 +433,11 @@ export default function VariantSelector({
       // ╨Ю╨▒╨╜╨╛╨▓╨╗╤П╨╡╨╝ ╨▓╨░╤А╨╕╨░╨╜╤В
       onVariantChange(displayVariant);
     } else {
-      console.warn('тЪая╕П No matching variant found for:', {
+      console.warn('⚠️ No matching variant found for:', {
         selectedSeries,
         selectedColor,
         selectedStorage,
-        availableVariants: allVariants.length,
+        availableVariants: variants.length,
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
