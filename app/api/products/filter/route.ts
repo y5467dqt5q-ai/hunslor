@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
@@ -48,90 +50,67 @@ export async function GET(request: NextRequest) {
       orderBy: [
         // Сначала iPhone (Apple бренд в категории smartphones)
         {
+          category: {
+            slug: 'asc',
+          },
+        },
+        {
           brand: 'asc',
         },
-        // Затем по названию модели
         {
-          model: 'asc',
+          name: 'asc',
         },
       ],
     });
-    
-    // Дополнительная сортировка: iPhone вверху для категории smartphones
-    if (category === 'smartphones') {
-      products.sort((a, b) => {
-        const aIsIPhone = a.brand.toLowerCase() === 'apple' || a.model.toLowerCase().includes('iphone');
-        const bIsIPhone = b.brand.toLowerCase() === 'apple' || b.model.toLowerCase().includes('iphone');
-        
-        if (aIsIPhone && !bIsIPhone) return -1;
-        if (!aIsIPhone && bIsIPhone) return 1;
-        
-        // Если оба iPhone или оба не iPhone, сортируем по бренду, затем по модели
-        if (a.brand !== b.brand) {
-          return a.brand.localeCompare(b.brand);
-        }
-        return a.model.localeCompare(b.model);
-      });
-    }
 
-    // Filter by search query if provided (case-insensitive)
-    let searchFilteredProducts = products;
+    let filteredProducts = products;
+
+    // Filter by search term (case insensitive)
     if (search) {
       const searchLower = search.toLowerCase();
-      searchFilteredProducts = products.filter((product) => {
-        return (
-          product.brand.toLowerCase().includes(searchLower) ||
-          product.model.toLowerCase().includes(searchLower) ||
-          product.slug.toLowerCase().includes(searchLower)
-        );
-      });
+      filteredProducts = filteredProducts.filter(
+        (p) =>
+          p.name.toLowerCase().includes(searchLower) ||
+          p.brand.toLowerCase().includes(searchLower) ||
+          p.model.toLowerCase().includes(searchLower)
+      );
     }
 
-    // Filter by variant attributes and price
-    let filteredProducts = searchFilteredProducts.map((product) => {
-      let filteredVariants = product.variants;
+    // Filter by price
+    if (minPrice) {
+      const min = parseFloat(minPrice);
+      filteredProducts = filteredProducts.filter((p) => p.basePrice >= min);
+    }
 
-      if (colors.length > 0) {
-        filteredVariants = filteredVariants.filter((v) => v.color && colors.includes(v.color));
-      }
+    if (maxPrice) {
+      const max = parseFloat(maxPrice);
+      filteredProducts = filteredProducts.filter((p) => p.basePrice <= max);
+    }
 
-      if (memories.length > 0) {
-        filteredVariants = filteredVariants.filter((v) => 
-          (v.memory && memories.includes(v.memory)) ||
-          (v.storage && memories.includes(v.storage))
-        );
-      }
-
-      if (sizes.length > 0) {
-        filteredVariants = filteredVariants.filter((v) => v.size && sizes.includes(v.size));
-      }
-
-      if (inStock) {
-        filteredVariants = filteredVariants.filter((v) => v.inStock && v.stock > 0);
-      }
-
-      // Price filtering
-      if (minPrice || maxPrice) {
-        const min = minPrice ? parseFloat(minPrice) : 0;
-        const max = maxPrice ? parseFloat(maxPrice) : Infinity;
-        
-        filteredVariants = filteredVariants.filter((v) => {
-          const price = product.basePrice * (1 - product.discount / 100) + (v.priceModifier || 0);
-          return price >= min && price <= max;
+    // Filter by variant attributes (if any variants match, keep the product)
+    if (colors.length > 0 || memories.length > 0 || sizes.length > 0) {
+      filteredProducts = filteredProducts.filter((p) => {
+        return p.variants.some((v) => {
+          let matches = true;
+          if (colors.length > 0 && v.color) {
+            matches = matches && colors.includes(v.color);
+          }
+          if (memories.length > 0 && v.memory) {
+            matches = matches && memories.includes(v.memory);
+          }
+          if (sizes.length > 0 && v.size) {
+            matches = matches && sizes.includes(v.size);
+          }
+          return matches;
         });
-      }
-
-      return {
-        ...product,
-        variants: filteredVariants,
-      };
-    }).filter(product => product.variants && product.variants.length > 0);
+      });
+    }
 
     return NextResponse.json(filteredProducts);
   } catch (error) {
     console.error('Error filtering products:', error);
     return NextResponse.json(
-      { error: 'Failed to filter products' },
+      { error: 'Internal server error' },
       { status: 500 }
     );
   }
