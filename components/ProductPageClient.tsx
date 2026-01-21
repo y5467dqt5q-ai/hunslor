@@ -166,7 +166,7 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
               </div>
             ) : variantImages.length > 0 ? (
               <Image
-                src={variantImages[currentImageIndex]}
+                src={variantImages[currentImageIndex].startsWith('/') || variantImages[currentImageIndex].startsWith('http') ? variantImages[currentImageIndex] : `/api/images/${variantImages[currentImageIndex]}`}
                 alt={product.model}
                 fill
                 className="object-contain"
@@ -210,11 +210,11 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
                   key={idx}
                   onClick={() => setCurrentImageIndex(idx)}
                   className={`relative w-20 h-20 flex-shrink-0 border-2 rounded-md overflow-hidden ${
-                    currentImageIndex === idx ? 'border-blue-500' : 'border-transparent'
+                    currentImageIndex === idx ? 'border-neon-green shadow-neon' : 'border-transparent'
                   }`}
                 >
                   <Image
-                    src={img}
+                    src={img.startsWith('/') || img.startsWith('http') ? img : `/api/images/${img}`}
                     alt={`Thumbnail ${idx}`}
                     fill
                     className="object-cover"
@@ -255,10 +255,10 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
                     <button
                       key={model}
                       onClick={() => setSelectedModel(model)}
-                      className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                      className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
                         selectedModel === model
-                          ? 'bg-black text-white border border-white'
-                          : 'bg-white text-black hover:bg-gray-200'
+                          ? 'bg-neon-green/10 text-neon-green border border-neon-green shadow-neon'
+                          : 'bg-zinc-900 text-gray-300 border border-zinc-700 hover:border-neon-green/50 hover:text-neon-green'
                       }`}
                     >
                       {model}
@@ -276,10 +276,10 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
                   <button
                     key={color}
                     onClick={() => setSelectedColor(color)}
-                    className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                    className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
                       selectedColor === color
-                        ? 'bg-black text-white border border-white'
-                        : 'bg-white text-black hover:bg-gray-200'
+                        ? 'bg-neon-green/10 text-neon-green border border-neon-green shadow-neon'
+                        : 'bg-zinc-900 text-gray-300 border border-zinc-700 hover:border-neon-green/50 hover:text-neon-green'
                     }`}
                   >
                     {color}
@@ -296,10 +296,10 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
                   <button
                     key={storage}
                     onClick={() => setSelectedStorage(storage)}
-                    className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                    className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
                       selectedStorage === storage
-                        ? 'bg-black text-white border border-white'
-                        : 'bg-white text-black hover:bg-gray-200'
+                        ? 'bg-neon-green/10 text-neon-green border border-neon-green shadow-neon'
+                        : 'bg-zinc-900 text-gray-300 border border-zinc-700 hover:border-neon-green/50 hover:text-neon-green'
                     }`}
                   >
                     {storage}
