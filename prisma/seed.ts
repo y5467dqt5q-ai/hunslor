@@ -410,7 +410,7 @@ async function main() {
             });
           }
 
-      console.log(`✅ Imported: ${productData.name}`);
+      console.log(`✅ Imported: ${productData.brand} ${productData.model}`);
     }
 
     console.log('✅ Products imported successfully!');

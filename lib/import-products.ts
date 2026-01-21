@@ -454,7 +454,6 @@ export function importProductsFromFolder(): ProductImportData[] {
       products.push({
         slug: folderName.toLowerCase().replace(/[^a-z0-9-]/g, '-'),
         folderName: folderName,
-        name: `${brand} ${model}`,
         brand,
         model,
         categorySlug,
