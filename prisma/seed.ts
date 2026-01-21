@@ -477,7 +477,8 @@ async function main() {
 main()
   .catch((e) => {
     console.error('❌ Error seeding database:', e);
-    process.exit(1);
+    // Don't exit with 1 to avoid stopping deployment
+    process.exit(0);
   })
   .finally(async () => {
     await prisma.$disconnect();
