@@ -16,6 +16,7 @@ interface AddToCartButtonProps {
     size?: string;
   };
   className?: string;
+  disabled?: boolean;
 }
 
 export default function AddToCartButton({
@@ -26,12 +27,14 @@ export default function AddToCartButton({
   image,
   variantData,
   className = '',
+  disabled = false,
 }: AddToCartButtonProps) {
   const addItem = useCartStore((state) => state.addItem);
   const showToast = useToastStore((state) => state.showToast);
   const [added, setAdded] = useState(false);
 
   const handleClick = () => {
+    if (disabled) return;
     // Добавляем товар в корзину
     addItem({
       productId,
