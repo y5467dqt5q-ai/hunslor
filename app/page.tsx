@@ -16,10 +16,38 @@ export default async function Home() {
         { folderName: { contains: 'iphone 17 pro max' } },
       ],
     },
-    select: { slug: true },
+    include: {
+      variants: {
+        take: 1,
+      }
+    }
   });
 
   const productHref = iphoneProduct ? `/products/${iphoneProduct.slug}` : '/catalog?category=iphone';
+
+  // Получаем изображение динамически
+  let heroImage = '/placeholder.png';
+  if (iphoneProduct) {
+    if (iphoneProduct.variants.length > 0 && iphoneProduct.variants[0].images) {
+      try {
+        const variantImages = JSON.parse(iphoneProduct.variants[0].images as string);
+        if (variantImages.images && variantImages.images.length > 0) {
+           heroImage = `/api/images/${variantImages.images[0]}`;
+        }
+      } catch (e) {
+        console.error('Error parsing variant images:', e);
+      }
+    } else if (iphoneProduct.baseImages) {
+       try {
+        const baseImages = JSON.parse(iphoneProduct.baseImages as string);
+        if (Array.isArray(baseImages) && baseImages.length > 0) {
+           heroImage = `/api/images/${baseImages[0]}`;
+        }
+      } catch (e) {
+        console.error('Error parsing base images:', e);
+      }
+    }
+  }
 
 
   return (
