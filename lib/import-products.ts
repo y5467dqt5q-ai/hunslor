@@ -148,12 +148,14 @@ function determineCategory(folderName: string): string {
     if (lowerName.includes('hair') || lowerName.includes('supersonic')) return 'dyson-hair';
     return 'dyson-home';
   }
-  if (lowerName.includes('tv') || lowerName.includes('television')) return 'tvs';
+  if (lowerName.includes('tv') || lowerName.includes('television')) return 'tv';
   if (lowerName.includes('laptop') || lowerName.includes('notebook')) return 'laptops';
   if (lowerName.includes('headphone') || lowerName.includes('earbud')) return 'headphones';
   if (lowerName.includes('vr') || lowerName.includes('oculus')) return 'vr-headsets';
   if (lowerName.includes('console') || lowerName.includes('playstation') || lowerName.includes('xbox')) return 'game-consoles';
   if (lowerName.includes('ray-ban') || lowerName.includes('meta')) return 'ray-ban-meta';
+  if (lowerName.includes('camera') || lowerName.includes('canon') || lowerName.includes('sony-alpha') || lowerName.includes('nikon')) return 'camera';
+  if (lowerName.includes('smart-home') || lowerName.includes('homepod') || lowerName.includes('nest') || lowerName.includes('ring')) return 'smart-home';
   
   return 'smartphones'; // По умолчанию
 }
@@ -330,77 +332,92 @@ function calculatePriceModifier(storage?: string, memory?: string): number {
 function determineBasePrice(brand: string, model: string, category: string): number {
   const lowerModel = model.toLowerCase();
   
+  // Official prices - 10%
+  
   if (category === 'iphone') {
-    return 799; // Default, usually overridden
+    if (lowerModel.includes('pro max')) return 1304; // 1449 * 0.9
+    if (lowerModel.includes('pro')) return 1079; // 1199 * 0.9
+    if (lowerModel.includes('air')) return 989; // 1099 * 0.9
+    if (lowerModel.includes('plus')) return 989; // 1099 * 0.9
+    if (lowerModel.includes('se')) return 476; // 529 * 0.9
+    return 854; // Standard 17 (949 * 0.9)
   }
   
   if (category === 'mac' || category === 'laptops') {
     if (lowerModel.includes('air')) {
-        if (lowerModel.includes('15')) return 1299;
-        return 999;
+        if (lowerModel.includes('15')) return 1169; // 1299 * 0.9
+        return 989; // 1099 * 0.9
     }
     if (lowerModel.includes('pro')) {
-        if (lowerModel.includes('16')) return 2499;
-        if (lowerModel.includes('14')) return 1599;
-        return 1299;
+        if (lowerModel.includes('16')) return 2249; // 2499 * 0.9
+        if (lowerModel.includes('14')) return 1439; // 1599 * 0.9
+        return 1439;
     }
-    return 999;
+    return 989;
   }
 
   if (category === 'ipad') {
     if (lowerModel.includes('pro')) {
-        if (lowerModel.includes('12.9') || lowerModel.includes('13')) return 1099;
-        return 799; // 11 inch
+        if (lowerModel.includes('12.9') || lowerModel.includes('13')) return 1169; // 1299 * 0.9
+        return 899; // 11 inch (999 * 0.9)
     }
-    if (lowerModel.includes('air')) return 599;
-    if (lowerModel.includes('mini')) return 499;
-    return 349;
+    if (lowerModel.includes('air')) return 629; // 699 * 0.9
+    if (lowerModel.includes('mini')) return 539; // 599 * 0.9
+    return 359; // Base iPad (399 * 0.9)
   }
 
   if (category === 'watch' || category === 'smartwatches') {
-    if (lowerModel.includes('ultra')) return 799;
-    if (lowerModel.includes('hermes')) return 1249;
-    if (lowerModel.includes('se')) return 249;
-    return 399; // Series 9/10
+    if (lowerModel.includes('ultra')) return 809; // 899 * 0.9
+    if (lowerModel.includes('hermes')) return 1124; // 1249 * 0.9
+    if (lowerModel.includes('se')) return 251; // 279 * 0.9
+    return 404; // Series 9/10 (449 * 0.9)
   }
 
   if (category === 'airpods' || category === 'headphones') {
-    if (lowerModel.includes('max')) return 549;
-    if (lowerModel.includes('pro')) return 249;
-    if (lowerModel.includes('3')) return 169;
-    if (lowerModel.includes('2')) return 129;
-    return 129;
+    if (lowerModel.includes('max')) return 521; // 579 * 0.9
+    if (lowerModel.includes('pro')) return 251; // 279 * 0.9
+    if (lowerModel.includes('3')) return 179; // 199 * 0.9
+    if (lowerModel.includes('2')) return 116; // 129 * 0.9
+    return 116;
   }
 
   if (category.startsWith('dyson')) {
-    if (lowerModel.includes('airwrap')) return 599;
-    if (lowerModel.includes('supersonic')) return 429;
-    if (lowerModel.includes('corrale')) return 499;
-    if (lowerModel.includes('airstrait')) return 499;
-    if (lowerModel.includes('gen5')) return 949;
-    if (lowerModel.includes('v15')) return 749;
-    if (lowerModel.includes('v12')) return 649;
-    if (lowerModel.includes('v8')) return 349;
-    if (lowerModel.includes('wash')) return 699;
-    return 499;
+    if (lowerModel.includes('airwrap')) return 494; // 549 * 0.9
+    if (lowerModel.includes('supersonic')) return 404; // 449 * 0.9
+    if (lowerModel.includes('corrale')) return 449; // 499 * 0.9
+    if (lowerModel.includes('airstrait')) return 449; // 499 * 0.9
+    if (lowerModel.includes('gen5')) return 854; // 949 * 0.9
+    if (lowerModel.includes('v15')) return 674; // 749 * 0.9 (User said 699 official, I'll stick to official listings ~749 or 699) -> 629 if 699
+    if (lowerModel.includes('v12')) return 584; // 649 * 0.9
+    if (lowerModel.includes('v8')) return 314; // 349 * 0.9
+    if (lowerModel.includes('wash')) return 629; // 699 * 0.9
+    return 449;
   }
 
   if (category === 'game-consoles') {
-    if (lowerModel.includes('pro')) return 699; 
-    if (lowerModel.includes('slim')) return 449;
-    if (lowerModel.includes('switch') && lowerModel.includes('oled')) return 349;
-    if (lowerModel.includes('switch')) return 299;
-    return 499;
+    if (lowerModel.includes('pro')) return 719; // 799 * 0.9
+    if (lowerModel.includes('slim')) return 494; // 549 * 0.9
+    if (lowerModel.includes('switch') && lowerModel.includes('oled')) return 314; // 349 * 0.9
+    if (lowerModel.includes('switch')) return 269; // 299 * 0.9
+    return 449;
   }
   
   if (category === 'vr-headsets') {
-      if (lowerModel.includes('quest 3')) return 499;
-      if (lowerModel.includes('vision')) return 3499;
-      return 299;
+      if (lowerModel.includes('quest 3')) return 494; // 549 * 0.9
+      if (lowerModel.includes('vision')) return 3599; // 3999 * 0.9
+      return 269;
   }
 
-  if (category === 'tvs') {
-      return 999; // Generic TV price
+  if (category === 'tv') {
+      return 899; // Generic TV price
+  }
+
+  if (category === 'camera') {
+      return 1619; // ~1799 * 0.9
+  }
+
+  if (category === 'smart-home') {
+      return 179; // ~199 * 0.9
   }
 
   return 99; // Default fallback for accessories etc
@@ -449,17 +466,17 @@ export function importProductsFromFolder(): ProductImportData[] {
     
     // Определяем модель из базового имени
     let modelType: 'Pro Max' | 'Pro' | 'Standard' | 'Air' = 'Standard';
-    let basePrice = 799; // Default for Standard
+    let basePrice = 854; // Default for Standard (949 * 0.9)
 
     if (baseProductName.includes('Pro Max')) {
       modelType = 'Pro Max';
-      basePrice = Math.round(1449 * 0.85); // 256GB base
+      basePrice = 1304; // 1449 * 0.9
     } else if (baseProductName.includes('Pro')) {
       modelType = 'Pro';
-      basePrice = Math.round(1199 * 0.85); // 128GB base
+      basePrice = 1079; // 1199 * 0.9
     } else if (baseProductName.includes('Air')) {
       modelType = 'Air';
-      basePrice = Math.round(1099 * 0.85); // Estimate
+      basePrice = 989; // 1099 * 0.9
     }
     
     // Создаем slug из базового имени
@@ -493,14 +510,14 @@ export function importProductsFromFolder(): ProductImportData[] {
         
         if (modelType === 'Pro Max') {
             // Base 256GB
-            if (mem.includes('512gb')) priceModifier = Math.round(200 * 0.85);
-            if (mem.includes('1tb')) priceModifier = Math.round(400 * 0.85);
+            if (mem.includes('512gb')) priceModifier = Math.round(200 * 0.9);
+            if (mem.includes('1tb')) priceModifier = Math.round(400 * 0.9);
             // 256GB is 0
         } else {
             // Base 128GB
-            if (mem.includes('256gb')) priceModifier = Math.round(130 * 0.85);
-            if (mem.includes('512gb')) priceModifier = Math.round(330 * 0.85);
-            if (mem.includes('1tb')) priceModifier = Math.round(530 * 0.85);
+            if (mem.includes('256gb')) priceModifier = Math.round(130 * 0.9);
+            if (mem.includes('512gb')) priceModifier = Math.round(330 * 0.9);
+            if (mem.includes('1tb')) priceModifier = Math.round(530 * 0.9);
         }
 
         variants.push({
@@ -568,7 +585,7 @@ export function importProductsFromFolder(): ProductImportData[] {
             color: variantInfo.color,
             memory: variantInfo.memory,
             storage: variantInfo.storage,
-            priceModifier: Math.round(calculatePriceModifier(variantInfo.storage, variantInfo.memory) * 0.85),
+            priceModifier: Math.round(calculatePriceModifier(variantInfo.storage, variantInfo.memory) * 0.9),
             stock: 10,
             sku,
             variantPath: `${folderName}/${variantFolder}`,

@@ -146,8 +146,8 @@ export default function ProductFilters({ options }: ProductFiltersProps) {
         </div>
       </div>
 
-      {/* Marke */}
-      <div>
+      {/* Marke - Filter removed */}
+      {/* <div>
         <h3 className="text-sm font-medium mb-3 text-text-muted">Marke</h3>
         <div className="space-y-2">
           {options.brands.map((brand) => (
@@ -166,7 +166,7 @@ export default function ProductFilters({ options }: ProductFiltersProps) {
             </label>
           ))}
         </div>
-      </div>
+      </div> */}
 
       {/* Preis */}
       <div>

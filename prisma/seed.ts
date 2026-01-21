@@ -52,11 +52,11 @@ async function main() {
   });
 
   const tvs = await prisma.category.upsert({
-    where: { slug: 'tvs' },
+    where: { slug: 'tv' },
     update: {},
     create: {
-      name: 'TVs',
-      slug: 'tvs',
+      name: 'TV',
+      slug: 'tv',
       icon: '📺',
       order: 5,
     },
@@ -104,6 +104,28 @@ async function main() {
       icon: '🌀',
       isMegaMenu: true,
       order: 9,
+    },
+  });
+
+  const camera = await prisma.category.upsert({
+    where: { slug: 'camera' },
+    update: {},
+    create: {
+      name: 'Camera',
+      slug: 'camera',
+      icon: '📷',
+      order: 10,
+    },
+  });
+
+  const smartHome = await prisma.category.upsert({
+    where: { slug: 'smart-home' },
+    update: {},
+    create: {
+      name: 'Smart Home',
+      slug: 'smart-home',
+      icon: '🏠',
+      order: 11,
     },
   });
 
