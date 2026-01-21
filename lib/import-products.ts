@@ -318,14 +318,19 @@ function parseIPhoneFolderName(folderName: string): { memory?: string; color?: s
  */
 export function importProductsFromFolder(): ProductImportData[] {
   if (!fs.existsSync(IMAGES_BASE_PATH)) {
-    console.warn(`Images folder not found: ${IMAGES_BASE_PATH}`);
+    console.warn(`⚠️ Images folder not found: ${IMAGES_BASE_PATH}`);
+    console.warn(`Current working directory: ${process.cwd()}`);
     return [];
   }
 
-  const products: ProductImportData[] = [];
+  console.log(`✅ Scanning images folder: ${IMAGES_BASE_PATH}`);
   const folders = fs.readdirSync(IMAGES_BASE_PATH, { withFileTypes: true })
     .filter(item => item.isDirectory())
     .map(item => item.name);
+
+  console.log(`📂 Found ${folders.length} product folders:`, folders);
+
+  const products: ProductImportData[] = [];
 
   // Группируем iPhone 17 модели
   const iphoneGroups = groupIPhoneProducts(folders);

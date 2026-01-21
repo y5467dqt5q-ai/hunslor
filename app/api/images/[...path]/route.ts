@@ -68,103 +68,106 @@ export async function GET(
     console.log('Requested path (raw):', params.path);
     console.log('Requested path (decoded):', decodedPath);
     
-    // КРИТИЧНО: Проверяем сначала в IMAGES_BASE_PATH, потом в PATH_17_AIR, потом в PATH_WATCHES
-    // Это позволяет загружать изображения для iPhone 17/17 Air и часов
+    // КРИТИЧНО: Проверяем сначала в IMAGES_BASE_PATH
     let imagePath = path.join(IMAGES_BASE_PATH, ...decodedPath);
     let basePath = IMAGES_BASE_PATH;
     
-    if (!fs.existsSync(imagePath)) {
-      // Если файл не найден в IMAGES_BASE_PATH, проверяем в PATH_17_AIR
-      imagePath = path.join(PATH_17_AIR, ...decodedPath);
-      basePath = PATH_17_AIR;
-    }
-    
-    if (!fs.existsSync(imagePath)) {
-      // Если файл не найден в PATH_17_AIR, проверяем в PATH_WATCHES (для часов)
-      imagePath = path.join(PATH_WATCHES, ...decodedPath);
-      basePath = PATH_WATCHES;
-    }
-    
-    if (!fs.existsSync(imagePath)) {
-      // Если файл не найден в PATH_WATCHES, проверяем в PATH_LAPTOPS (для ноутбуков)
-      imagePath = path.join(PATH_LAPTOPS, ...decodedPath);
-      basePath = PATH_LAPTOPS;
-    }
-    
-    if (!fs.existsSync(imagePath)) {
-      // Если файл не найден в PATH_LAPTOPS, проверяем в PATH_DYSON (для Dyson)
-      imagePath = path.join(PATH_DYSON, ...decodedPath);
-      basePath = PATH_DYSON;
-    }
-    
-    if (!fs.existsSync(imagePath)) {
-      // Если файл не найден в PATH_DYSON, проверяем в PATH_TV (для TV)
-      imagePath = path.join(PATH_TV, ...decodedPath);
-      basePath = PATH_TV;
-    }
-    
-    if (!fs.existsSync(imagePath)) {
-      // Если файл не найден в PATH_TV, проверяем в PATH_HEADPHONES (для наушников)
-      const headphonesPath = path.join(PATH_HEADPHONES, ...decodedPath);
-      console.log(`🔍 Проверка PATH_HEADPHONES: ${headphonesPath}`);
-      if (fs.existsSync(headphonesPath)) {
-        imagePath = headphonesPath;
-        basePath = PATH_HEADPHONES;
-        console.log(`   ✅ Найдено в PATH_HEADPHONES!`);
+    // В продакшене (Railway) мы НЕ используем локальные пути
+    // Это предотвращает попытки чтения C:\Users\... на Linux сервере
+    if (process.env.NODE_ENV !== 'production') {
+      if (!fs.existsSync(imagePath)) {
+        // Если файл не найден в IMAGES_BASE_PATH, проверяем в PATH_17_AIR
+        imagePath = path.join(PATH_17_AIR, ...decodedPath);
+        basePath = PATH_17_AIR;
       }
-    }
-    
-    if (!fs.existsSync(imagePath)) {
-      // Если файл не найден в PATH_HEADPHONES, проверяем в PATH_VR (для VR)
-      const vrPath = path.join(PATH_VR, ...decodedPath);
-      if (fs.existsSync(vrPath)) {
-        imagePath = vrPath;
-        basePath = PATH_VR;
+      
+      if (!fs.existsSync(imagePath)) {
+        // Если файл не найден в PATH_17_AIR, проверяем в PATH_WATCHES (для часов)
+        imagePath = path.join(PATH_WATCHES, ...decodedPath);
+        basePath = PATH_WATCHES;
       }
-    }
-    
-    if (!fs.existsSync(imagePath)) {
-      // Если файл не найден в PATH_VR, проверяем в PATH_KONSOLE (для консолей)
-      const konsolePath = path.join(PATH_KONSOLE, ...decodedPath);
-      if (fs.existsSync(konsolePath)) {
-        imagePath = konsolePath;
-        basePath = PATH_KONSOLE;
+      
+      if (!fs.existsSync(imagePath)) {
+        // Если файл не найден в PATH_WATCHES, проверяем в PATH_LAPTOPS (для ноутбуков)
+        imagePath = path.join(PATH_LAPTOPS, ...decodedPath);
+        basePath = PATH_LAPTOPS;
       }
-    }
-    
-    if (!fs.existsSync(imagePath)) {
-      // Если файл не найден в PATH_KONSOLE, проверяем в PATH_SMART_HOME (для Smart Home)
-      const smartHomePath = path.join(PATH_SMART_HOME, ...decodedPath);
-      if (fs.existsSync(smartHomePath)) {
-        imagePath = smartHomePath;
-        basePath = PATH_SMART_HOME;
+      
+      if (!fs.existsSync(imagePath)) {
+        // Если файл не найден в PATH_LAPTOPS, проверяем в PATH_DYSON (для Dyson)
+        imagePath = path.join(PATH_DYSON, ...decodedPath);
+        basePath = PATH_DYSON;
       }
-    }
-    
-    if (!fs.existsSync(imagePath)) {
-      // Если файл не найден в PATH_SMART_HOME, проверяем в PATH_SMARTPHONE (для смартфонов)
-      const smartphonePath = path.join(PATH_SMARTPHONE, ...decodedPath);
-      if (fs.existsSync(smartphonePath)) {
-        imagePath = smartphonePath;
-        basePath = PATH_SMARTPHONE;
+      
+      if (!fs.existsSync(imagePath)) {
+        // Если файл не найден в PATH_DYSON, проверяем в PATH_TV (для TV)
+        imagePath = path.join(PATH_TV, ...decodedPath);
+        basePath = PATH_TV;
       }
-    }
-    
-    if (!fs.existsSync(imagePath)) {
-      // Если файл не найден в PATH_SMARTPHONE, проверяем в PATH_KAMERA (для камер)
-      const kameraPath = path.join(PATH_KAMERA, ...decodedPath);
-      if (fs.existsSync(kameraPath)) {
-        imagePath = kameraPath;
-        basePath = PATH_KAMERA;
+      
+      if (!fs.existsSync(imagePath)) {
+        // Если файл не найден в PATH_TV, проверяем в PATH_HEADPHONES (для наушников)
+        const headphonesPath = path.join(PATH_HEADPHONES, ...decodedPath);
+        console.log(`🔍 Проверка PATH_HEADPHONES: ${headphonesPath}`);
+        if (fs.existsSync(headphonesPath)) {
+          imagePath = headphonesPath;
+          basePath = PATH_HEADPHONES;
+          console.log(`   ✅ Найдено в PATH_HEADPHONES!`);
+        }
       }
-    }
-    
-    if (!fs.existsSync(imagePath)) {
-      // Если файл не найден в PATH_KAMERA, проверяем в PATH_12345 (для новых смартфонов)
-      const path12345 = path.join(PATH_12345, ...decodedPath);
-      if (fs.existsSync(path12345)) {
-        imagePath = path12345;
-        basePath = PATH_12345;
+      
+      if (!fs.existsSync(imagePath)) {
+        // Если файл не найден в PATH_HEADPHONES, проверяем в PATH_VR (для VR)
+        const vrPath = path.join(PATH_VR, ...decodedPath);
+        if (fs.existsSync(vrPath)) {
+          imagePath = vrPath;
+          basePath = PATH_VR;
+        }
+      }
+      
+      if (!fs.existsSync(imagePath)) {
+        // Если файл не найден в PATH_VR, проверяем в PATH_KONSOLE (для консолей)
+        const konsolePath = path.join(PATH_KONSOLE, ...decodedPath);
+        if (fs.existsSync(konsolePath)) {
+          imagePath = konsolePath;
+          basePath = PATH_KONSOLE;
+        }
+      }
+      
+      if (!fs.existsSync(imagePath)) {
+        // Если файл не найден в PATH_KONSOLE, проверяем в PATH_SMART_HOME (для Smart Home)
+        const smartHomePath = path.join(PATH_SMART_HOME, ...decodedPath);
+        if (fs.existsSync(smartHomePath)) {
+          imagePath = smartHomePath;
+          basePath = PATH_SMART_HOME;
+        }
+      }
+      
+      if (!fs.existsSync(imagePath)) {
+        // Если файл не найден в PATH_SMART_HOME, проверяем в PATH_SMARTPHONE (для смартфонов)
+        const smartphonePath = path.join(PATH_SMARTPHONE, ...decodedPath);
+        if (fs.existsSync(smartphonePath)) {
+          imagePath = smartphonePath;
+          basePath = PATH_SMARTPHONE;
+        }
+      }
+      
+      if (!fs.existsSync(imagePath)) {
+        // Если файл не найден в PATH_SMARTPHONE, проверяем в PATH_KAMERA (для камер)
+        const kameraPath = path.join(PATH_KAMERA, ...decodedPath);
+        if (fs.existsSync(kameraPath)) {
+          imagePath = kameraPath;
+          basePath = PATH_KAMERA;
+        }
+      }
+      
+      if (!fs.existsSync(imagePath)) {
+        // Если файл не найден в PATH_KAMERA, проверяем в PATH_12345 (для новых смартфонов)
+        const path12345 = path.join(PATH_12345, ...decodedPath);
+        if (fs.existsSync(path12345)) {
+          imagePath = path12345;
+          basePath = PATH_12345;
+        }
       }
     }
     
@@ -182,6 +185,31 @@ export async function GET(
 
     // Проверяем существование файла
     if (!fs.existsSync(imagePath)) {
+      // DEBUG: Если файл не найден, выводим содержимое родительской папки, чтобы понять структуру
+      const parentDir = path.dirname(imagePath);
+      console.log(`❌ File not found: ${imagePath}`);
+      if (fs.existsSync(parentDir)) {
+         console.log(`📂 Contents of ${parentDir}:`);
+         try {
+           const files = fs.readdirSync(parentDir);
+           console.log(files.join('\n'));
+         } catch (e) {
+           console.error('Error reading directory:', e);
+         }
+      } else {
+         console.log(`❌ Parent directory does not exist: ${parentDir}`);
+         // Попробуем вывести содержимое IMAGES_BASE_PATH
+         if (fs.existsSync(IMAGES_BASE_PATH)) {
+            console.log(`📂 Contents of IMAGES_BASE_PATH (${IMAGES_BASE_PATH}):`);
+            try {
+               const files = fs.readdirSync(IMAGES_BASE_PATH);
+               console.log(files.slice(0, 20).join('\n') + (files.length > 20 ? '\n...and more' : ''));
+            } catch (e) {
+               console.error('Error reading IMAGES_BASE_PATH:', e);
+            }
+         }
+      }
+
       // Возвращаем прозрачный 1x1 PNG placeholder
       const transparentPng = Buffer.from(
         'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==',
