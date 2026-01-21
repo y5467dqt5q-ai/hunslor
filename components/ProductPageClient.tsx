@@ -226,8 +226,8 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
 
           <div className="flex items-center justify-between">
             <div className="text-2xl font-bold text-blue-600">
-              ${currentPrice.toLocaleString()}
-            </div>
+                €{currentPrice.toLocaleString()}
+              </div>
             <FavoriteButton productId={product.id} />
           </div>
 

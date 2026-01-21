@@ -453,13 +453,13 @@ export function importProductsFromFolder(): ProductImportData[] {
 
     if (baseProductName.includes('Pro Max')) {
       modelType = 'Pro Max';
-      basePrice = 1199; // 256GB base
+      basePrice = 1449; // 256GB base
     } else if (baseProductName.includes('Pro')) {
       modelType = 'Pro';
-      basePrice = 999; // 128GB base
+      basePrice = 1199; // 128GB base
     } else if (baseProductName.includes('Air')) {
       modelType = 'Air';
-      basePrice = 899; // Estimate
+      basePrice = 1099; // Estimate
     }
     
     // Создаем slug из базового имени
