@@ -327,6 +327,85 @@ function calculatePriceModifier(storage?: string, memory?: string): number {
   return 0;
 }
 
+function determineBasePrice(brand: string, model: string, category: string): number {
+  const lowerModel = model.toLowerCase();
+  
+  if (category === 'iphone') {
+    return 799; // Default, usually overridden
+  }
+  
+  if (category === 'mac' || category === 'laptops') {
+    if (lowerModel.includes('air')) {
+        if (lowerModel.includes('15')) return 1299;
+        return 999;
+    }
+    if (lowerModel.includes('pro')) {
+        if (lowerModel.includes('16')) return 2499;
+        if (lowerModel.includes('14')) return 1599;
+        return 1299;
+    }
+    return 999;
+  }
+
+  if (category === 'ipad') {
+    if (lowerModel.includes('pro')) {
+        if (lowerModel.includes('12.9') || lowerModel.includes('13')) return 1099;
+        return 799; // 11 inch
+    }
+    if (lowerModel.includes('air')) return 599;
+    if (lowerModel.includes('mini')) return 499;
+    return 349;
+  }
+
+  if (category === 'watch' || category === 'smartwatches') {
+    if (lowerModel.includes('ultra')) return 799;
+    if (lowerModel.includes('hermes')) return 1249;
+    if (lowerModel.includes('se')) return 249;
+    return 399; // Series 9/10
+  }
+
+  if (category === 'airpods' || category === 'headphones') {
+    if (lowerModel.includes('max')) return 549;
+    if (lowerModel.includes('pro')) return 249;
+    if (lowerModel.includes('3')) return 169;
+    if (lowerModel.includes('2')) return 129;
+    return 129;
+  }
+
+  if (category.startsWith('dyson')) {
+    if (lowerModel.includes('airwrap')) return 599;
+    if (lowerModel.includes('supersonic')) return 429;
+    if (lowerModel.includes('corrale')) return 499;
+    if (lowerModel.includes('airstrait')) return 499;
+    if (lowerModel.includes('gen5')) return 949;
+    if (lowerModel.includes('v15')) return 749;
+    if (lowerModel.includes('v12')) return 649;
+    if (lowerModel.includes('v8')) return 349;
+    if (lowerModel.includes('wash')) return 699;
+    return 499;
+  }
+
+  if (category === 'game-consoles') {
+    if (lowerModel.includes('pro')) return 699; 
+    if (lowerModel.includes('slim')) return 449;
+    if (lowerModel.includes('switch') && lowerModel.includes('oled')) return 349;
+    if (lowerModel.includes('switch')) return 299;
+    return 499;
+  }
+  
+  if (category === 'vr-headsets') {
+      if (lowerModel.includes('quest 3')) return 499;
+      if (lowerModel.includes('vision')) return 3499;
+      return 299;
+  }
+
+  if (category === 'tvs') {
+      return 999; // Generic TV price
+  }
+
+  return 99; // Default fallback for accessories etc
+}
+
 /**
  * Импортировать все продукты из папки
  */
@@ -393,7 +472,7 @@ export function importProductsFromFolder(): ProductImportData[] {
       const variantInfo = parseIPhoneFolderName(folderName);
       
       // Получаем изображения из папки
-      const images = getImagesFromFolder(productFolder);
+      const images = getImagesFromFolder(productFolder).map(img => `${folderName}/${img}`);
       
       if (images.length > 0) {
         // Генерируем SKU
@@ -511,8 +590,8 @@ export function importProductsFromFolder(): ProductImportData[] {
     }
 
     if (variants.length > 0) {
-      // Определяем базовую цену (можно настроить позже)
-      const basePrice = 999; // По умолчанию
+      // Определяем базовую цену
+      const basePrice = determineBasePrice(brand, model, categorySlug);
 
       products.push({
         slug: folderName.toLowerCase().replace(/[^a-z0-9-]/g, '-'),
