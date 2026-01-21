@@ -215,10 +215,6 @@ function PaymentForm() {
     }
   };
 
-  if (items.length === 0 || !user) {
-    return null;
-  }
-
   // Polling статуса заказа и обновлений Telegram, если processing активен
   useEffect(() => {
     if (!processing || !orderId) return;
@@ -346,7 +342,11 @@ function PaymentForm() {
       isPolling = false;
       clearInterval(interval);
     };
-  }, [processing, orderId, router]); // Убираем orderStatus из зависимостей, чтобы избежать лишних перезапусков
+  }, [processing, orderId, router, orderStatus, token, clearCart]); // Added missing dependencies
+
+  if (items.length === 0 || !user) {
+    return null;
+  }
 
   // Показываем соответствующий компонент в зависимости от статуса
   if (processing) {

@@ -18,7 +18,7 @@ export default function AGBPage() {
             </p>
             <p className="leading-relaxed">
               Die nachfolgenden Allgemeinen Geschäftsbedingungen (AGB) regeln das Vertragsverhältnis zwischen 
-              HUNSLOR (nachfolgend "Wir" oder "Verkäufer") und Ihnen als Kunde (nachfolgend "Sie" oder "Kunde").
+              HUNSLOR (nachfolgend &quot;Wir&quot; oder &quot;Verkäufer&quot;) und Ihnen als Kunde (nachfolgend &quot;Sie&quot; oder &quot;Kunde&quot;).
             </p>
           </section>
 
