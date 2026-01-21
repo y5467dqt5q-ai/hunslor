@@ -155,11 +155,11 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
   const currentPrice = selectedVariant?.price || product.basePrice;
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8 text-white">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Left Column: Images */}
         <div className="space-y-4">
-          <div className="relative aspect-square w-full bg-gray-100 rounded-lg overflow-hidden">
+          <div className="relative aspect-square w-full bg-transparent rounded-lg overflow-hidden flex items-center justify-center">
             {isLoadingImages ? (
               <div className="absolute inset-0 flex items-center justify-center text-gray-400">
                 Loading...
@@ -184,15 +184,19 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
               <>
                 <button
                   onClick={() => setCurrentImageIndex((prev) => (prev > 0 ? prev - 1 : variantImages.length - 1))}
-                  className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 p-2 rounded-full shadow-md hover:bg-white transition"
+                  className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 p-2 rounded-full shadow-md hover:bg-white transition text-black"
                 >
-                  ←
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+                  </svg>
                 </button>
                 <button
                   onClick={() => setCurrentImageIndex((prev) => (prev < variantImages.length - 1 ? prev + 1 : 0))}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 p-2 rounded-full shadow-md hover:bg-white transition"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 p-2 rounded-full shadow-md hover:bg-white transition text-black"
                 >
-                  →
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                  </svg>
                 </button>
               </>
             )}
@@ -231,11 +235,11 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
                 ? ` ${selectedVariant.model}` 
                 : ''}
             </h1>
-            <p className="text-sm text-gray-500 mt-1">SKU: {selectedVariant?.sku}</p>
+            <p className="text-sm text-gray-400 mt-1">SKU: {selectedVariant?.sku}</p>
           </div>
 
           <div className="flex items-center justify-between">
-            <div className="text-2xl font-bold text-blue-600">
+            <div className="text-2xl font-bold text-blue-500">
                 €{currentPrice.toLocaleString()}
               </div>
             <FavoriteButton productId={product.id} />
@@ -245,16 +249,16 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
             {/* Model Selector */}
             {models.length > 1 && (
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Model</label>
+                <label className="block text-sm font-medium text-gray-400 mb-2">Model</label>
                 <div className="flex flex-wrap gap-2">
                   {models.map((model) => (
                     <button
                       key={model}
                       onClick={() => setSelectedModel(model)}
-                      className={`px-4 py-2 rounded-full border ${
+                      className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                         selectedModel === model
-                          ? 'bg-black text-white border-black'
-                          : 'bg-white text-gray-700 border-gray-300 hover:border-black'
+                          ? 'bg-black text-white border border-white'
+                          : 'bg-white text-black hover:bg-gray-200'
                       }`}
                     >
                       {model}
@@ -266,16 +270,16 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
 
             {/* Color Selector */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Color: {selectedColor}</label>
+              <label className="block text-sm font-medium text-gray-400 mb-2">Color: {selectedColor}</label>
               <div className="flex flex-wrap gap-2">
                 {colors.map((color) => (
                   <button
                     key={color}
                     onClick={() => setSelectedColor(color)}
-                    className={`px-4 py-2 rounded-full border ${
+                    className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                       selectedColor === color
-                        ? 'bg-black text-white border-black'
-                        : 'bg-white text-gray-700 border-gray-300 hover:border-black'
+                        ? 'bg-black text-white border border-white'
+                        : 'bg-white text-black hover:bg-gray-200'
                     }`}
                   >
                     {color}
@@ -286,16 +290,16 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
 
             {/* Storage Selector */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Storage</label>
+              <label className="block text-sm font-medium text-gray-400 mb-2">Storage</label>
               <div className="flex flex-wrap gap-2">
                 {storages.map((storage) => (
                   <button
                     key={storage}
                     onClick={() => setSelectedStorage(storage)}
-                    className={`px-4 py-2 rounded-full border ${
+                    className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                       selectedStorage === storage
-                        ? 'bg-black text-white border-black'
-                        : 'bg-white text-gray-700 border-gray-300 hover:border-black'
+                        ? 'bg-black text-white border border-white'
+                        : 'bg-white text-black hover:bg-gray-200'
                     }`}
                   >
                     {storage}
@@ -305,7 +309,7 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
             </div>
           </div>
 
-          <div className="pt-6 border-t">
+          <div className="pt-6 border-t border-gray-800">
             <AddToCartButton
               productId={product.id}
               variantId={selectedVariant?.id || product.id}
@@ -319,13 +323,13 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
               disabled={!selectedVariant?.available}
             />
             {!selectedVariant?.available && (
-              <p className="text-red-500 mt-2 text-sm">Currently unavailable</p>
+              <p className="text-red-400 mt-2 text-sm">Currently unavailable</p>
             )}
           </div>
 
-          <div className="prose max-w-none pt-8 border-t">
-            <h3 className="text-lg font-semibold mb-2">Description</h3>
-            <p className="text-gray-600 whitespace-pre-line">
+          <div className="prose max-w-none pt-8 border-t border-gray-800">
+            <h3 className="text-lg font-semibold mb-2 text-white">Description</h3>
+            <p className="text-gray-300 whitespace-pre-line">
               {product.baseDescription}
               {selectedVariant?.storage ? `\n\nStorage: ${selectedVariant.storage}` : ''}
               {selectedVariant?.color ? `\nColor: ${selectedVariant.color}` : ''}
