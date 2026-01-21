@@ -166,7 +166,7 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
               </div>
             ) : variantImages.length > 0 ? (
               <Image
-                src={`/api/images/${variantImages[currentImageIndex]}`}
+                src={variantImages[currentImageIndex]}
                 alt={product.model}
                 fill
                 className="object-contain"
@@ -210,7 +210,7 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
                   }`}
                 >
                   <Image
-                    src={`/api/images/${img}`}
+                    src={img}
                     alt={`Thumbnail ${idx}`}
                     fill
                     className="object-cover"
@@ -225,7 +225,12 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
         {/* Right Column: Product Info */}
         <div className="space-y-6">
           <div>
-            <h1 className="text-3xl font-bold">{product.brand} {product.model} {selectedVariant?.model !== 'Standard' ? selectedVariant?.model : ''}</h1>
+            <h1 className="text-3xl font-bold">
+              {product.brand} {product.model}
+              {selectedVariant?.model && selectedVariant.model !== 'Standard' && !product.model.includes(selectedVariant.model) 
+                ? ` ${selectedVariant.model}` 
+                : ''}
+            </h1>
             <p className="text-sm text-gray-500 mt-1">SKU: {selectedVariant?.sku}</p>
           </div>
 
@@ -304,7 +309,7 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
             <AddToCartButton
               productId={product.id}
               variantId={selectedVariant?.id || product.id}
-              title={`${product.brand} ${product.model} ${selectedVariant?.model && selectedVariant.model !== 'Standard' ? selectedVariant.model : ''}`}
+              title={`${product.brand} ${product.model}${selectedVariant?.model && selectedVariant.model !== 'Standard' && !product.model.includes(selectedVariant.model) ? ` ${selectedVariant.model}` : ''}`}
               price={selectedVariant?.price || product.basePrice}
               image={variantImages[0] || ''}
               variantData={{
@@ -320,7 +325,11 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
 
           <div className="prose max-w-none pt-8 border-t">
             <h3 className="text-lg font-semibold mb-2">Description</h3>
-            <p className="text-gray-600 whitespace-pre-line">{product.baseDescription}</p>
+            <p className="text-gray-600 whitespace-pre-line">
+              {product.baseDescription}
+              {selectedVariant?.storage ? `\n\nStorage: ${selectedVariant.storage}` : ''}
+              {selectedVariant?.color ? `\nColor: ${selectedVariant.color}` : ''}
+            </p>
           </div>
         </div>
       </div>
