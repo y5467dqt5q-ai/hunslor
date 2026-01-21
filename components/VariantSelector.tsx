@@ -477,7 +477,7 @@ export default function VariantSelector({
     label: string,
     values: string[],
     selected: string | null,
-    setSelected: (value: string | null) => void,
+    setSelected: (value: any) => void,
     type: 'series' | 'color' | 'storage'
   ) => {
     if (values.length === 0) return null;
