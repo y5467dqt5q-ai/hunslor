@@ -6,7 +6,13 @@ const getImagesPath = () => {
   if (process.env.IMAGES_PATH) {
     return process.env.IMAGES_PATH;
   }
-  // Используем папку pictr на рабочем столе пользователя
+  
+  // Для продакшена (Railway) используем путь внутри контейнера
+  if (process.env.NODE_ENV === 'production') {
+    return path.join(process.cwd(), 'public', 'images');
+  }
+
+  // Используем папку pictr на рабочем столе пользователя (только для локальной разработки)
   return 'C:\\Users\\Вітання!\\Desktop\\pictr';
 };
 

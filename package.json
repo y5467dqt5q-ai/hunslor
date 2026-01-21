@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "prisma generate && next build",
     "postbuild": "prisma db push --skip-generate || echo 'DB push skipped'",
-    "start": "next start",
+    "start": "prisma db push && next start",
     "lint": "next lint",
     "db:push": "prisma db push",
     "db:generate": "prisma generate",
