@@ -541,7 +541,7 @@ export function importProductsFromFolder(): ProductImportData[] {
     
     const productFolder = path.join(IMAGES_BASE_PATH, folderName);
     const { brand, model } = parseProductName(folderName);
-    const categorySlug = determineCategory(folderName, brand);
+    const categorySlug = determineCategory(folderName);
     
     // Получаем варианты из подпапок
     const variantFolders = fs.readdirSync(productFolder, { withFileTypes: true })
