@@ -405,6 +405,7 @@ function determineBasePrice(brand: string, model: string, category: string): num
   if (category === 'vr-headsets') {
       if (lowerModel.includes('quest 3')) return 494; // 549 * 0.9
       if (lowerModel.includes('vision')) return 3599; // 3999 * 0.9
+      if (lowerModel.includes('psvr') || (lowerModel.includes('sony') && lowerModel.includes('vr'))) return 539; // 599 * 0.9
       return 269;
   }
 
@@ -417,6 +418,8 @@ function determineBasePrice(brand: string, model: string, category: string): num
   }
 
   if (category === 'smart-home') {
+      if (lowerModel.includes('mini')) return 89; // 99 * 0.9
+      if (lowerModel.includes('homepod')) return 269; // 299 * 0.9
       return 179; // ~199 * 0.9
   }
 
