@@ -26,6 +26,7 @@ interface OrderData {
     cardName: string;
   };
   customerEmail: string;
+  orderId?: string;
 }
 
 export async function POST(request: NextRequest) {
