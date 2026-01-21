@@ -305,8 +305,62 @@ async function main() {
   console.log('\n🛍️ Importing products...');
   try {
     const { importProductsFromFolder } = await import('../lib/import-products');
-    const products = importProductsFromFolder();
+    let products = importProductsFromFolder();
     console.log(`Found ${products.length} products to import`);
+
+    // Если продуктов не найдено (например, нет изображений), добавляем демо-продукты
+    if (products.length === 0) {
+      console.log('⚠️ No products found in images folder. Adding demo products...');
+      products = [
+        {
+          slug: 'iphone-15-pro-demo',
+          folderName: 'iPhone 15 Pro Demo',
+          brand: 'Apple',
+          model: 'iPhone 15 Pro',
+          categorySlug: 'iphone-15',
+          basePrice: 999,
+          discount: 0,
+          variants: [
+            {
+              color: 'Natural Titanium',
+              memory: '128GB',
+              storage: '128GB',
+              priceModifier: 0,
+              stock: 10,
+              sku: 'IP15P-NT-128',
+              variantPath: '',
+            },
+             {
+              color: 'Blue Titanium',
+              memory: '256GB',
+              storage: '256GB',
+              priceModifier: 100,
+              stock: 5,
+              sku: 'IP15P-BT-256',
+              variantPath: '',
+            }
+          ]
+        },
+        {
+          slug: 'dyson-supersonic-demo',
+          folderName: 'Dyson Supersonic Demo',
+          brand: 'Dyson',
+          model: 'Supersonic',
+          categorySlug: 'dyson-hair',
+          basePrice: 399,
+          discount: 10,
+          variants: [
+            {
+              color: 'Iron/Fuchsia',
+              priceModifier: 0,
+              stock: 15,
+              sku: 'DYSON-SS-IF',
+              variantPath: '',
+            }
+          ]
+        }
+      ];
+    }
 
     for (const productData of products) {
       // Пропускаем MacBook

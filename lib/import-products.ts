@@ -6,8 +6,20 @@ const getImagesPath = () => {
   if (process.env.IMAGES_PATH) {
     return process.env.IMAGES_PATH;
   }
-  // Используем папку pictr на рабочем столе пользователя
-  return 'C:\\Users\\Вітання!\\Desktop\\pictr';
+  
+  // Для продакшена (Railway) ищем в public/images
+  if (process.env.NODE_ENV === 'production') {
+    return path.join(process.cwd(), 'public', 'images');
+  }
+
+  // Используем папку pictr на рабочем столе пользователя (только локально)
+  const localPath = 'C:\\Users\\Вітання!\\Desktop\\pictr';
+  // Если локальной папки нет, пробуем public/images в корне проекта
+  if (!fs.existsSync(localPath)) {
+    return path.join(process.cwd(), 'public', 'images');
+  }
+  
+  return localPath;
 };
 
 const IMAGES_BASE_PATH = getImagesPath();
