@@ -3,6 +3,8 @@ import fs from 'fs';
 import path from 'path';
 import type { Dirent } from 'fs';
 
+export const dynamic = 'force-dynamic';
+
 // Путь к папке с мини-картинками
 const getCategoryIconsPath = () => {
   if (process.env.CATEGORY_ICONS_PATH) {

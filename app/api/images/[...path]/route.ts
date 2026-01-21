@@ -4,6 +4,8 @@ import path from 'path';
 import os from 'os';
 import type { Dirent } from 'fs';
 
+export const dynamic = 'force-dynamic';
+
 // Получаем путь из переменной окружения или используем дефолтный
 const getImagesPath = () => {
   if (process.env.IMAGES_PATH) {
