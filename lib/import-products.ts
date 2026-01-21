@@ -361,9 +361,9 @@ export function importProductsFromFolder(): ProductImportData[] {
         const sku = `IP17${modelPrefix}-${colorCode}-${memoryPart}`.replace(/[^A-Z0-9-]/g, '-');
         
         variants.push({
-          color: variantInfo.color || null,
-          memory: variantInfo.memory || null,
-          storage: variantInfo.memory || null, // memory и storage одинаковые для iPhone
+          color: variantInfo.color || undefined,
+          memory: variantInfo.memory || undefined,
+          storage: variantInfo.memory || undefined, // memory и storage одинаковые для iPhone
           priceModifier: 0,
           stock: 10,
           sku,
