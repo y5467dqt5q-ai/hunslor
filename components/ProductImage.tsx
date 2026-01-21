@@ -41,11 +41,14 @@ export default function ProductImage({
     if (isApiJsonEndpoint && src) {
       fetch(src)
         .then(res => res.json())
-        .then(data => {
-          if (data.mainImage) {
-            setImageUrl(data.mainImage);
-          } else if (data.images && data.images.length > 0) {
-            setImageUrl(data.images[0]);
+        .then((data: unknown) => {
+          // Type guard for API response
+          const response = data as { mainImage?: unknown; images?: unknown };
+          
+          if (typeof response.mainImage === 'string') {
+            setImageUrl(response.mainImage);
+          } else if (Array.isArray(response.images) && response.images.length > 0 && typeof response.images[0] === 'string') {
+            setImageUrl(response.images[0]);
           }
         })
         .catch(() => setError(true));

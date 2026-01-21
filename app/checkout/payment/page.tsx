@@ -233,7 +233,7 @@ function PaymentForm() {
           });
           
           if (pollResponse.ok) {
-            const pollData = await pollResponse.json();
+            const pollData = await pollResponse.json() as { lastUpdateId?: number; processedCallbacks?: unknown[] };
             if (pollData.lastUpdateId) {
               pollOffset = pollData.lastUpdateId.toString();
             }
@@ -255,7 +255,7 @@ function PaymentForm() {
         });
         
         if (response.ok) {
-          const data = await response.json();
+          const data = await response.json() as { status: string };
           const newStatus = data.status;
           
           console.log('[Payment Page] Status check:', { 

@@ -21,12 +21,18 @@ function getUserId(request: NextRequest): string | null {
   }
 }
 
-interface OrderItem {
+interface OrderItemInput {
   productId: string;
   variantId: string;
   quantity: number;
   price: number;
   variantData?: Record<string, unknown>;
+}
+
+interface OrderRequestBody {
+  items: OrderItemInput[];
+  shippingAddress: unknown;
+  paymentMethod?: string;
 }
 
 export async function POST(request: NextRequest) {
@@ -39,7 +45,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const body = await request.json();
+    const body = await request.json() as OrderRequestBody;
     const { items, shippingAddress, paymentMethod } = body;
 
     if (!items || !Array.isArray(items) || items.length === 0) {
@@ -64,7 +70,7 @@ export async function POST(request: NextRequest) {
         shippingAddress: JSON.stringify(shippingAddress),
         paymentMethod: paymentMethod || 'card',
         items: {
-          create: items.map((item: OrderItem) => ({
+          create: items.map((item: OrderItemInput) => ({
             productId: item.productId,
             variantId: item.variantId,
             quantity: item.quantity,

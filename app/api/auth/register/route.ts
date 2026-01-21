@@ -13,7 +13,7 @@ const registerSchema = z.object({
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
+    const body: unknown = await request.json();
     const { email, name, password } = registerSchema.parse(body);
 
     // Check if user exists

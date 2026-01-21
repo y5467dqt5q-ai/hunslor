@@ -32,7 +32,7 @@ export default function FavoritesPage() {
 
       try {
         const response = await fetch(`/api/products?ids=${favorites.join(',')}`);
-        const data = await response.json();
+        const data = await response.json() as Product[];
         setProducts(data);
       } catch (error) {
         console.error('Error fetching favorites:', error);

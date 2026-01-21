@@ -19,11 +19,12 @@ function ProductImageLoader({ apiUrl, alt }: { apiUrl: string; alt: string }) {
     if (mounted && apiUrl.includes('/api/products/images')) {
       fetch(apiUrl)
         .then(res => res.json())
-        .then(data => {
-          if (data.mainImage) {
-            setImageUrl(data.mainImage);
-          } else if (data.images && data.images.length > 0) {
-            setImageUrl(data.images[0]);
+        .then((data: unknown) => {
+          const response = data as { mainImage?: unknown; images?: unknown };
+          if (typeof response.mainImage === 'string') {
+            setImageUrl(response.mainImage);
+          } else if (Array.isArray(response.images) && response.images.length > 0 && typeof response.images[0] === 'string') {
+            setImageUrl(response.images[0]);
           }
           setLoading(false);
         })

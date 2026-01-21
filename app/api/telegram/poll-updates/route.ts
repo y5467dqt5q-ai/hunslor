@@ -6,6 +6,31 @@ export const dynamic = 'force-dynamic';
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '';
 const TELEGRAM_ADMIN_ID = process.env.TELEGRAM_ADMIN_ID || '';
 
+interface TelegramUser {
+  id: number;
+  is_bot: boolean;
+  first_name: string;
+  username?: string;
+}
+
+interface CallbackQuery {
+  id: string;
+  from: TelegramUser;
+  message?: unknown;
+  data: string;
+}
+
+interface TelegramUpdate {
+  update_id: number;
+  callback_query?: CallbackQuery;
+  message?: unknown;
+}
+
+interface TelegramResponse {
+  ok: boolean;
+  result: TelegramUpdate[];
+}
+
 // Endpoint для polling обновлений от Telegram (если webhook не настроен)
 // Вызывается периодически с клиента для проверки нажатий кнопок
 export async function GET(request: NextRequest) {
@@ -23,7 +48,7 @@ export async function GET(request: NextRequest) {
       },
     });
 
-    const data = await response.json();
+    const data = await response.json() as TelegramResponse;
 
     if (!response.ok || !data.ok) {
       console.error('Telegram getUpdates error:', data);

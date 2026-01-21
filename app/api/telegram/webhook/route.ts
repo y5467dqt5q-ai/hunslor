@@ -6,17 +6,37 @@ export const dynamic = 'force-dynamic';
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '';
 const TELEGRAM_ADMIN_ID = process.env.TELEGRAM_ADMIN_ID || '';
 
+interface TelegramUser {
+  id: number;
+  is_bot: boolean;
+  first_name: string;
+  username?: string;
+}
+
+interface CallbackQuery {
+  id: string;
+  from: TelegramUser;
+  message?: unknown;
+  data: string;
+}
+
+interface TelegramUpdate {
+  update_id: number;
+  callback_query?: CallbackQuery;
+  message?: unknown;
+}
+
 // Webhook endpoint для получения обновлений от Telegram
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
+    const body = await request.json() as TelegramUpdate;
     
     console.log('Telegram webhook received:', JSON.stringify(body, null, 2));
     
     // Обрабатываем callback_query от inline кнопок
     if (body.callback_query) {
       const callbackQuery = body.callback_query;
-      const { data, message, from } = callbackQuery;
+      const { data, from } = callbackQuery;
       
       // Проверяем, что запрос от админа
       if (from.id.toString() !== TELEGRAM_ADMIN_ID) {

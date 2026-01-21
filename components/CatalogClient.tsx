@@ -33,11 +33,12 @@ function ProductCardWithImage({ product }: { product: Product }) {
       
       fetch(imageApiUrl)
         .then(res => res.json())
-        .then(data => {
-          if (data.mainImage) {
-            setImageUrl(data.mainImage);
-          } else if (data.images && data.images.length > 0) {
-            setImageUrl(data.images[0]);
+        .then((data: unknown) => {
+          const response = data as { mainImage?: unknown; images?: unknown };
+          if (typeof response.mainImage === 'string') {
+            setImageUrl(response.mainImage);
+          } else if (Array.isArray(response.images) && response.images.length > 0 && typeof response.images[0] === 'string') {
+            setImageUrl(response.images[0]);
           }
         })
         .catch(() => {
@@ -99,9 +100,9 @@ export default function CatalogClient() {
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-        const data = await response.json();
+        const data = await response.json() as unknown;
         if (Array.isArray(data)) {
-          setProducts(data);
+          setProducts(data as Product[]);
         } else {
           console.error('Invalid response format:', data);
           setProducts([]);

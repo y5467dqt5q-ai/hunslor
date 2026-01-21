@@ -83,7 +83,7 @@ export default function AccountPage() {
         });
         
         if (response.ok) {
-          const data = await response.json();
+          const data = await response.json() as UserProfile;
           setProfileData({
             name: data.name || '',
             email: data.email || '',

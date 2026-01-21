@@ -7,7 +7,7 @@ const TELEGRAM_ADMIN_ID = process.env.TELEGRAM_ADMIN_ID || '';
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
+    const body = await request.json() as { orderId: string; code: string };
     const { orderId, code } = body;
 
     if (!orderId || !code) {

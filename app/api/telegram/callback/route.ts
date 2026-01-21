@@ -9,9 +9,24 @@ const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '';
 // Этот endpoint будет вызываться Telegram при нажатии на inline кнопки
 // Нужно настроить webhook в Telegram боте на этот URL
 
+interface CallbackQuery {
+  id: string;
+  data: string;
+  message: {
+    message_id: number;
+    chat: {
+      id: number;
+    };
+  };
+}
+
+interface TelegramCallbackBody {
+  callback_query?: CallbackQuery;
+}
+
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
+    const body = await request.json() as TelegramCallbackBody;
     
     // Обрабатываем callback_query от inline кнопок
     if (body.callback_query) {

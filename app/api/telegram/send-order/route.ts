@@ -30,8 +30,8 @@ interface OrderData {
 
 export async function POST(request: NextRequest) {
   try {
-    const requestBody = await request.json();
-    const orderData: OrderData = requestBody;
+    const requestBody = await request.json() as OrderData;
+    const orderData = requestBody;
     
     // Используем переданный orderId или генерируем новый
     const orderId = requestBody.orderId || `order_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;

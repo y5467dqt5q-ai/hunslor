@@ -75,7 +75,7 @@ export default function SupportChat() {
         throw new Error('Fehler beim Senden der Nachricht');
       }
 
-      const data = await response.json();
+      const data = await response.json() as { message: string };
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',

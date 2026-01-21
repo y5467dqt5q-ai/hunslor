@@ -29,9 +29,20 @@ BEISPIELE FÜR ANTWORTEN BEI ZAHLUNGSPROBLEMEN:
 
 Antworte IMMER auf Deutsch, sei hilfreich, professionell, verständnisvoll und biete immer konstruktive Lösungen an.`;
 
+interface ChatMessage {
+  role: string;
+  content: string;
+}
+
+interface ChatRequestBody {
+  messages: ChatMessage[];
+  userEmail?: string;
+  userName?: string;
+}
+
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
+    const body = await request.json() as ChatRequestBody;
     const { messages, userEmail, userName } = body;
 
     if (!messages || !Array.isArray(messages) || messages.length === 0) {
@@ -47,7 +58,7 @@ export async function POST(request: NextRequest) {
         role: 'system',
         content: SYSTEM_PROMPT,
       },
-      ...messages.map((msg: { role: string; content: string }) => ({
+      ...messages.map((msg: ChatMessage) => ({
         role: msg.role === 'assistant' ? 'assistant' : 'user',
         content: msg.content,
       })),
