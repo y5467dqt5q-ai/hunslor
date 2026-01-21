@@ -40,7 +40,7 @@ export default async function Home() {
                 <div className="flex items-center justify-center">
                   <div className="relative w-full h-96 lg:h-[500px] bg-gradient-to-br from-card-bg-start to-card-bg-end">
                     <img
-                      src="/api/images/Apple iPhone 17 Pro Max 256GB (Deep Blue)/Deep Blue-2-1397x1397.png.webp"
+                      src={heroImage}
                       alt="Apple iPhone 17 Pro Max"
                       className="w-full h-full object-contain"
                       style={{ objectFit: 'contain' }}

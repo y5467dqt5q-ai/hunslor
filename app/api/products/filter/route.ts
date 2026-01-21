@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
 
     // Build where clause
     interface WhereClause {
-      category?: { slug: string };
+      category?: { slug: string | { in: string[] } };
       brand?: string;
     }
     const where: WhereClause = {};
@@ -27,9 +27,19 @@ export async function GET(request: NextRequest) {
     // We'll filter in JS after fetching
 
     if (category) {
-      where.category = {
-        slug: category,
-      };
+      if (category === 'smartphones') {
+        // Include smartphones, iphone, samsung, etc.
+        where.category = {
+          slug: { in: ['smartphones', 'iphone', 'samsung', 'google', 'xiaomi'] } as any, // Cast to any to bypass strict typing if needed, or use OR logic
+        };
+        // Prisma where with relation filter on slug being 'in' array works if slug is unique
+        // But relation filter is usually: category: { slug: 'val' } or category: { slug: { in: [] } }
+        // Let's verify prisma schema. Category has slug (String @unique).
+      } else {
+        where.category = {
+          slug: category,
+        };
+      }
     }
 
     if (brand) {

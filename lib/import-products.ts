@@ -315,6 +315,17 @@ function parseIPhoneFolderName(folderName: string): { memory?: string; color?: s
   return result;
 }
 
+function calculatePriceModifier(storage?: string, memory?: string): number {
+  const val = storage || memory;
+  if (!val) return 0;
+  const s = val.toLowerCase();
+  if (s.includes('2tb')) return 600;
+  if (s.includes('1tb')) return 400;
+  if (s.includes('512gb')) return 200;
+  if (s.includes('256gb')) return 100;
+  return 0;
+}
+
 /**
  * Импортировать все продукты из папки
  */
@@ -333,6 +344,20 @@ export function importProductsFromFolder(): ProductImportData[] {
   console.log(`📂 Found ${folders.length} product folders:`, folders);
 
   const products: ProductImportData[] = [];
+  const usedSkus = new Set<string>();
+
+  const getUniqueSku = (baseSku: string) => {
+    let sku = baseSku;
+    let counter = 1;
+    // Add randomness to ensure uniqueness across different products/runs if needed
+    // But mostly to handle duplicates within the import batch
+    while (usedSkus.has(sku)) {
+      sku = `${baseSku}-${counter}`;
+      counter++;
+    }
+    usedSkus.add(sku);
+    return sku;
+  };
 
   // Группируем iPhone 17 модели
   const iphoneGroups = groupIPhoneProducts(folders);
@@ -344,14 +369,22 @@ export function importProductsFromFolder(): ProductImportData[] {
     
     // Определяем модель из базового имени
     let modelType: 'Pro Max' | 'Pro' | 'Standard' | 'Air' = 'Standard';
+    let basePrice = 799; // Default for Standard
+
     if (baseProductName.includes('Pro Max')) {
       modelType = 'Pro Max';
+      basePrice = 1199; // 256GB base
     } else if (baseProductName.includes('Pro')) {
       modelType = 'Pro';
+      basePrice = 999; // 128GB base
     } else if (baseProductName.includes('Air')) {
       modelType = 'Air';
+      basePrice = 899; // Estimate
     }
     
+    // Создаем slug из базового имени
+    const productSlug = baseProductName.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+
     for (const folderName of folderNames) {
       if (!firstFolder) firstFolder = folderName;
       
@@ -363,26 +396,38 @@ export function importProductsFromFolder(): ProductImportData[] {
       
       if (images.length > 0) {
         // Генерируем SKU
-        const memoryPart = variantInfo.memory || '256GB';
+        const memoryPart = variantInfo.memory || '128GB';
         const colorPart = variantInfo.color || 'Standard';
-        let modelPrefix = '';
+        
+        // Use product slug in SKU to ensure uniqueness across products
+        const shortSlug = productSlug.replace('apple-', '').replace('iphone-', '').toUpperCase().slice(0, 10);
+        const colorCode = colorPart.replace(/\s+/g, '').toUpperCase().slice(0, 3);
+        const rawSku = `${shortSlug}-${colorCode}-${memoryPart}`.replace(/[^A-Z0-9-]/g, '-');
+        
+        const sku = getUniqueSku(rawSku);
+        
+        // Calculate price modifier
+        // For Pro Max, base is 256GB. For others, 128GB.
+        let priceModifier = 0;
+        const mem = (variantInfo.memory || '').toLowerCase();
+        
         if (modelType === 'Pro Max') {
-          modelPrefix = 'PM';
-        } else if (modelType === 'Pro') {
-          modelPrefix = 'P';
-        } else if (modelType === 'Air') {
-          modelPrefix = 'AIR';
+            // Base 256GB
+            if (mem.includes('512gb')) priceModifier = 200;
+            if (mem.includes('1tb')) priceModifier = 400;
+            // 256GB is 0
+        } else {
+            // Base 128GB
+            if (mem.includes('256gb')) priceModifier = 130;
+            if (mem.includes('512gb')) priceModifier = 330;
+            if (mem.includes('1tb')) priceModifier = 530;
         }
-        // Для Standard оставляем пустое или используем 'S'
-        
-        const colorCode = colorPart.replace(/\s+/g, '').toUpperCase().slice(0, 2);
-        const sku = `IP17${modelPrefix}-${colorCode}-${memoryPart}`.replace(/[^A-Z0-9-]/g, '-');
-        
+
         variants.push({
           color: variantInfo.color || undefined,
           memory: variantInfo.memory || undefined,
           storage: variantInfo.memory || undefined, // memory и storage одинаковые для iPhone
-          priceModifier: 0,
+          priceModifier,
           stock: 10,
           sku,
           variantPath: folderName, // Сохраняем полное название папки для поиска изображений
@@ -391,23 +436,14 @@ export function importProductsFromFolder(): ProductImportData[] {
     }
     
     if (variants.length > 0 && firstFolder) {
-      // Определяем базовую цену (можно настроить позже)
-      let basePrice = 799; // Для iPhone 17
-      if (modelType === 'Pro Max') basePrice = 1299;
-      else if (modelType === 'Pro') basePrice = 1199;
-      else if (modelType === 'Air') basePrice = 999;
-      
-      // Создаем slug из базового имени
-      const slug = baseProductName.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
-      
       products.push({
-        slug,
+        slug: productSlug,
         folderName: firstFolder, // Используем первую папку как пример для поиска изображений
         brand: 'Apple',
         model: baseProductName.replace('Apple ', ''),
         categorySlug: 'iphone',
         basePrice,
-        discount: 20,
+        discount: 0, // No discount by default
         variants,
       });
     }
@@ -441,11 +477,14 @@ export function importProductsFromFolder(): ProductImportData[] {
         const images = getImagesFromFolder(variantPath);
         
         // Генерируем SKU
-        const sku = `${folderName}-${variantFolder}`.toUpperCase().replace(/[^A-Z0-9]/g, '-');
+        const rawSku = `${folderName}-${variantFolder}`.toUpperCase().replace(/[^A-Z0-9]/g, '-');
+        const sku = getUniqueSku(rawSku);
+
+        const priceModifier = calculatePriceModifier(variantInfo.storage, variantInfo.memory);
         
         variants.push({
           ...variantInfo,
-          priceModifier: 0,
+          priceModifier,
           stock: 10,
           sku,
           variantPath: variantFolder,
@@ -455,10 +494,13 @@ export function importProductsFromFolder(): ProductImportData[] {
       // Если нет подпапок, создаем один вариант по умолчанию
       const images = getImagesFromFolder(productFolder);
       if (images.length > 0) {
+        const rawSku = folderName.toUpperCase().replace(/[^A-Z0-9]/g, '-');
+        const sku = getUniqueSku(rawSku);
+
         variants.push({
           priceModifier: 0,
           stock: 10,
-          sku: folderName.toUpperCase().replace(/[^A-Z0-9]/g, '-'),
+          sku,
           variantPath: '',
         });
       }

@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import { importProductsFromFolder } from '../lib/import-products';
 
 const prisma = new PrismaClient();
 
@@ -299,186 +300,111 @@ async function main() {
     },
   });
 
-  console.log('✅ Categories seeded successfully!');
-  
-  // Импортируем продукты после создания категорий
-  console.log('\n🛍️ Importing products...');
-  try {
-    const { importProductsFromFolder } = await import('../lib/import-products');
-    let products = importProductsFromFolder();
-    console.log(`Found ${products.length} products to import`);
+  console.log('✅ Categories created');
 
-    // Если продуктов не найдено (например, нет изображений), добавляем демо-продукты
-    if (products.length === 0) {
-      console.log('⚠️ No products found in images folder. Adding demo products...');
-      products = [
-        {
-          slug: 'iphone-15-pro-demo',
-          folderName: 'iPhone 15 Pro Demo',
-          brand: 'Apple',
-          model: 'iPhone 15 Pro',
-          categorySlug: 'iphone-15',
-          basePrice: 999,
-          discount: 0,
-          variants: [
-            {
-              color: 'Natural Titanium',
-              memory: '128GB',
-              storage: '128GB',
-              priceModifier: 0,
-              stock: 10,
-              sku: 'IP15P-NT-128',
-              variantPath: '',
+  // Import products
+  console.log('📦 Importing products...');
+  const products = importProductsFromFolder();
+  console.log(`Found ${products.length} products to import`);
+
+  for (const productData of products) {
+    try {
+        // Find category
+        let category = await prisma.category.findFirst({
+            where: {
+                OR: [
+                    { slug: productData.categorySlug },
+                    { children: { some: { slug: productData.categorySlug } } },
+                ],
             },
-             {
-              color: 'Blue Titanium',
-              memory: '256GB',
-              storage: '256GB',
-              priceModifier: 100,
-              stock: 5,
-              sku: 'IP15P-BT-256',
-              variantPath: '',
-            }
-          ]
-        },
-        {
-          slug: 'dyson-supersonic-demo',
-          folderName: 'Dyson Supersonic Demo',
-          brand: 'Dyson',
-          model: 'Supersonic',
-          categorySlug: 'dyson-hair',
-          basePrice: 399,
-          discount: 10,
-          variants: [
-            {
-              color: 'Iron/Fuchsia',
-              priceModifier: 0,
-              stock: 15,
-              sku: 'DYSON-SS-IF',
-              variantPath: '',
-            }
-          ]
-        }
-      ];
-    }
-
-    for (const productData of products) {
-      // Пропускаем MacBook
-      if (productData.model.toLowerCase().includes('macbook') || 
-          productData.slug.toLowerCase().includes('macbook')) {
-        console.log(`⏭️ Skipping MacBook: ${productData.brand} ${productData.model}`);
-        continue;
-      }
-      
-      // Найти категорию
-      let category = await prisma.category.findFirst({
-        where: {
-          OR: [
-            { slug: productData.categorySlug },
-            { children: { some: { slug: productData.categorySlug } } },
-          ],
-        },
-      });
-
-      // Если категория не найдена, используем первую доступную
-      if (!category) {
-        category = await prisma.category.findFirst({
-          where: { parentId: null },
         });
-      }
 
-      if (!category) {
-        console.warn(`Category not found for ${productData.brand} ${productData.model}, skipping...`);
-        continue;
-      }
-
-      // Создать или обновить продукт
-      const product = await prisma.product.upsert({
-        where: { slug: productData.slug },
-        update: {
-          brand: productData.brand,
-          model: productData.model,
-          basePrice: productData.basePrice,
-          discount: productData.discount,
-          folderName: productData.folderName || null,
-        },
-        create: {
-          slug: productData.slug,
-          folderName: productData.folderName || null,
-          brand: productData.brand,
-          model: productData.model,
-          categoryId: category.id,
-          baseDescription: `Premium ${productData.brand} ${productData.model}`,
-          baseImages: JSON.stringify([]),
-          basePrice: productData.basePrice,
-          discount: productData.discount,
-        },
-      });
-
-      // Удалить старые варианты
-      await prisma.productVariant.deleteMany({
-        where: { productId: product.id },
-      });
-
-          // Создать варианты
-          for (const variantData of productData.variants) {
-            // Получить изображения варианта
-            const images: string[] = [];
-            // Для iPhone 17 моделей variantPath содержит полное название папки
-            // Сохраняем его в images JSON для последующего использования
-            const imageData: { images: string[]; variantPath?: string } = {
-              images: [],
-            };
-            
-            if (variantData.variantPath) {
-              // Если variantPath содержит полное название папки (для iPhone 17), сохраняем его
-              if (variantData.variantPath.includes('Apple iPhone 17')) {
-                imageData.variantPath = variantData.variantPath;
-                // Изображения будут загружаться через API по полному пути
-                images.push(`${variantData.variantPath}/01-main.webp`);
-              } else {
-                // Обычный подпапка варианта
-                images.push(`${productData.slug}/${variantData.variantPath}/01-main.webp`);
-              }
-            } else {
-              // Изображения из основной папки
-              images.push(`${productData.slug}/01-main.webp`);
-            }
-            
-            imageData.images = images;
-
-            await prisma.productVariant.create({
-              data: {
-                productId: product.id,
-                color: variantData.color || null,
-                memory: variantData.memory || null,
-                size: variantData.size || null,
-                ram: variantData.ram || null,
-                storage: variantData.storage || null,
-                priceModifier: variantData.priceModifier,
-                images: JSON.stringify(imageData), // Сохраняем объект с variantPath
-                stock: variantData.stock,
-                inStock: variantData.stock > 0,
-                sku: variantData.sku,
-              },
+        if (!category) {
+            // Fallback to first available
+             category = await prisma.category.findFirst({
+                where: { parentId: null },
             });
-          }
+        }
 
-      console.log(`✅ Imported: ${productData.brand} ${productData.model}`);
+        if (!category) {
+            console.log(`❌ SKIP: No category for ${productData.slug}`);
+            continue;
+        }
+
+        // Upsert Product
+         const product = await prisma.product.upsert({
+            where: { slug: productData.slug },
+            update: {
+                brand: productData.brand,
+                model: productData.model,
+                basePrice: productData.basePrice,
+                discount: productData.discount,
+                folderName: productData.folderName || null,
+                categoryId: category.id,
+            },
+            create: {
+                slug: productData.slug,
+                folderName: productData.folderName || null,
+                brand: productData.brand,
+                model: productData.model,
+                categoryId: category.id,
+                baseDescription: `Premium ${productData.brand} ${productData.model}`,
+                baseImages: JSON.stringify([]),
+                basePrice: productData.basePrice,
+                discount: productData.discount,
+            },
+        });
+
+        // Delete old variants
+        await prisma.productVariant.deleteMany({
+            where: { productId: product.id },
+        });
+
+        // Create variants
+        for (const variantData of productData.variants) {
+             const images: string[] = [];
+             const imageData: { images: string[]; variantPath?: string } = { images: [] };
+
+             if (variantData.variantPath) {
+                if (variantData.variantPath.includes('Apple iPhone 17')) {
+                    imageData.variantPath = variantData.variantPath;
+                    images.push(`${variantData.variantPath}/01-main.webp`);
+                } else {
+                    images.push(`${productData.slug}/${variantData.variantPath}/01-main.webp`);
+                }
+             } else {
+                images.push(`${productData.slug}/01-main.webp`);
+             }
+             imageData.images = images;
+
+             await prisma.productVariant.create({
+                data: {
+                    productId: product.id,
+                    color: variantData.color || null,
+                    memory: variantData.memory || null,
+                    size: variantData.size || null,
+                    ram: variantData.ram || null,
+                    storage: variantData.storage || null,
+                    priceModifier: variantData.priceModifier,
+                    images: JSON.stringify(imageData),
+                    stock: variantData.stock,
+                    inStock: variantData.stock > 0,
+                    sku: variantData.sku,
+                }
+             });
+        }
+    } catch (err: any) {
+        console.log(`❌ ERROR on ${productData.slug}: ${err.message}`);
     }
-
-    console.log('✅ Products imported successfully!');
-  } catch (error) {
-    console.error('❌ Error importing products:', error);
-    // Не прерываем выполнение, если импорт продуктов не удался
   }
+  
+  console.log('🏁 Seeding finished');
 }
 
 main()
   .catch((e) => {
-    console.error('❌ Error seeding database:', e);
-    // Don't exit with 1 to avoid stopping deployment
-    process.exit(0);
+    console.error(e);
+    process.exit(1);
   })
   .finally(async () => {
     await prisma.$disconnect();
