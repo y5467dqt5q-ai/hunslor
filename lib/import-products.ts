@@ -123,7 +123,9 @@ function parseProductName(folderName: string): { brand: string; model: string } 
   
   // Убираем бренд из модели, если он там есть
   if (model.toLowerCase().includes(brand.toLowerCase())) {
-    model = model.replace(new RegExp(brand, 'gi'), '').trim();
+    // Экранируем спецсимволы для RegExp
+    const escapedBrand = brand.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    model = model.replace(new RegExp(escapedBrand, 'gi'), '').trim();
     model = model.replace(/^[-_]+|[-_]+$/g, ''); // Убираем дефисы в начале/конце
   }
 
