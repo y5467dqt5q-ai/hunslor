@@ -361,38 +361,45 @@ async function main() {
         });
 
         // Create variants
-        for (const variantData of productData.variants) {
-             const images: string[] = [];
-             const imageData: { images: string[]; variantPath?: string } = { images: [] };
+            for (const variantData of productData.variants) {
+                 const images: string[] = [];
+                 const imageData: { images: string[]; variantPath?: string } = { images: [] };
 
-             if (variantData.variantPath) {
-                if (variantData.variantPath.includes('Apple iPhone 17')) {
-                    imageData.variantPath = variantData.variantPath;
-                    images.push(`${variantData.variantPath}/01-main.webp`);
-                } else {
-                    images.push(`${productData.slug}/${variantData.variantPath}/01-main.webp`);
-                }
-             } else {
-                images.push(`${productData.slug}/01-main.webp`);
-             }
-             imageData.images = images;
+                 if (variantData.images && variantData.images.length > 0) {
+                    // Используем уже найденные изображения
+                    imageData.images = variantData.images;
+                 } else {
+                     // Fallback logic if no images found (should not happen with new import logic)
+                     if (variantData.variantPath) {
+                        if (variantData.variantPath.includes('Apple iPhone 17')) {
+                            imageData.variantPath = variantData.variantPath;
+                            images.push(`${variantData.variantPath}/01-main.webp`);
+                        } else {
+                            images.push(`${productData.slug}/${variantData.variantPath}/01-main.webp`);
+                        }
+                        imageData.images = images;
+                     } else {
+                        images.push(`${productData.slug}/01-main.webp`);
+                        imageData.images = images;
+                     }
+                 }
 
-             await prisma.productVariant.create({
-                data: {
-                    productId: product.id,
-                    color: variantData.color || null,
-                    memory: variantData.memory || null,
-                    size: variantData.size || null,
-                    ram: variantData.ram || null,
-                    storage: variantData.storage || null,
-                    priceModifier: variantData.priceModifier,
-                    images: JSON.stringify(imageData),
-                    stock: variantData.stock,
-                    inStock: variantData.stock > 0,
-                    sku: variantData.sku,
-                }
-             });
-        }
+                 await prisma.productVariant.create({
+                    data: {
+                        productId: product.id,
+                        color: variantData.color || null,
+                        memory: variantData.memory || null,
+                        size: variantData.size || null,
+                        ram: variantData.ram || null,
+                        storage: variantData.storage || null,
+                        priceModifier: variantData.priceModifier,
+                        images: JSON.stringify(imageData),
+                        stock: variantData.stock,
+                        inStock: variantData.stock > 0,
+                        sku: variantData.sku,
+                    }
+                 });
+            }
     } catch (err: any) {
         console.log(`❌ ERROR on ${productData.slug}: ${err.message}`);
     }

@@ -93,17 +93,24 @@ export async function GET() {
                  const images: string[] = [];
                  const imageData: { images: string[]; variantPath?: string } = { images: [] };
 
-                 if (variantData.variantPath) {
-                    if (variantData.variantPath.includes('Apple iPhone 17')) {
-                        imageData.variantPath = variantData.variantPath;
-                        images.push(`${variantData.variantPath}/01-main.webp`);
-                    } else {
-                        images.push(`${productData.slug}/${variantData.variantPath}/01-main.webp`);
-                    }
+                 if (variantData.images && variantData.images.length > 0) {
+                    // Используем уже найденные изображения
+                    imageData.images = variantData.images;
                  } else {
-                    images.push(`${productData.slug}/01-main.webp`);
+                     // Fallback logic if no images found
+                     if (variantData.variantPath) {
+                        if (variantData.variantPath.includes('Apple iPhone 17')) {
+                            imageData.variantPath = variantData.variantPath;
+                            images.push(`${variantData.variantPath}/01-main.webp`);
+                        } else {
+                            images.push(`${productData.slug}/${variantData.variantPath}/01-main.webp`);
+                        }
+                        imageData.images = images;
+                     } else {
+                        images.push(`${productData.slug}/01-main.webp`);
+                        imageData.images = images;
+                     }
                  }
-                 imageData.images = images;
 
                  await prisma.productVariant.create({
                     data: {

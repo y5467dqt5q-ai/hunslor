@@ -45,6 +45,7 @@ export interface VariantImportData {
   stock: number;
   sku: string;
   variantPath: string; // Путь к подпапке варианта или полное название папки для iPhone 17
+  images: string[]; // Список найденных изображений
 }
 
 /**
@@ -431,6 +432,7 @@ export function importProductsFromFolder(): ProductImportData[] {
           stock: 10,
           sku,
           variantPath: folderName, // Сохраняем полное название папки для поиска изображений
+          images: images, // Сохраняем найденные изображения
         });
       }
     }
@@ -488,6 +490,7 @@ export function importProductsFromFolder(): ProductImportData[] {
           stock: 10,
           sku,
           variantPath: variantFolder,
+          images: images, // Сохраняем найденные изображения
         });
       }
     } else {
@@ -502,6 +505,7 @@ export function importProductsFromFolder(): ProductImportData[] {
           stock: 10,
           sku,
           variantPath: '',
+          images: images, // Сохраняем найденные изображения
         });
       }
     }

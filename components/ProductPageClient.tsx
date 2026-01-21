@@ -70,12 +70,10 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
       // Всегда загружаем через API, чтобы получить актуальные изображения
       // КРИТИЧНО: Передаем color и storage, если они отличаются от варианта в БД
       try {
-        // Добавляем случайное число и timestamp для полного обхода кеша
-        const cacheBuster = `${Date.now()}_${Math.random().toString(36).substring(7)}`;
-        let imageUrl = `/api/products/images?product=${encodeURIComponent(product.slug)}&variant=${selectedVariant.id}&_cb=${cacheBuster}`;
+        // Убираем cacheBuster, чтобы использовать кеширование браузера
+        let imageUrl = `/api/products/images?product=${encodeURIComponent(product.slug)}&variant=${selectedVariant.id}`;
         
         // Если цвет или память были изменены (виртуальный вариант), передаем их в API
-        // Это гарантирует, что загрузятся изображения для выбранного цвета и памяти
         if (selectedVariant.color) {
           imageUrl += `&color=${encodeURIComponent(selectedVariant.color)}`;
         }
@@ -83,13 +81,7 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
           imageUrl += `&storage=${encodeURIComponent(selectedVariant.storage)}`;
         }
         
-        const response = await fetch(imageUrl, { 
-          cache: 'no-store',
-          headers: {
-            'Cache-Control': 'no-cache',
-            'Pragma': 'no-cache',
-          },
-        });
+        const response = await fetch(imageUrl);
 
         if (response.ok) {
           const jsonData: unknown = await response.json();
@@ -111,7 +103,7 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
             (img): img is string  => 
               typeof img === 'string' && img.trim().length > 0 
           ); 
- 
+
           console.log ( 
             '✅ Loaded images for variant:' , 
             selectedVariant.id , 
@@ -120,18 +112,8 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
           ); 
  
           if (safeImages.length > 0 ) { 
-            const cacheBuster: string = `${Date.now()}_${Math .random() 
-              .toString(36 ) 
-              .substring(7 )}`; 
- 
-            const imagesWithCacheBuster: string[] = safeImages.map ( 
-              (img: string): string  => 
-                img.includes('?' ) 
-                  ? `${img}&_cb=${cacheBuster} ` 
-                  : `${img}?_cb=${cacheBuster} ` 
-            ); 
- 
-            setVariantImages (imagesWithCacheBuster); 
+            // Убираем cacheBuster из URL изображений
+            setVariantImages (safeImages); 
             setCurrentImageIndex(0 ); 
           } else  { 
             console.warn('⚠ No images found for variant:', selectedVariant.id ); 
