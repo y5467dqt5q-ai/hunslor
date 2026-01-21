@@ -2,6 +2,8 @@ import Link from 'next/link';
 import { prisma } from '@/lib/prisma';
 import CategoryButton from '@/components/CategoryButton';
 
+export const dynamic = 'force-dynamic';
+
 export default async function Home() {
   // Находим первый продукт iPhone 17 Pro Max для hero-секции
   const iphoneProduct = await prisma.product.findFirst({

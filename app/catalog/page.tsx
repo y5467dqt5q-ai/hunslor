@@ -3,6 +3,8 @@ import { prisma } from '@/lib/prisma';
 import CatalogClient from '@/components/CatalogClient';
 import ProductFilters from '@/components/ProductFilters';
 
+export const dynamic = 'force-dynamic';
+
 interface FilterCategory {
   id: string;
   name: string;
