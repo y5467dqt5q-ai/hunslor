@@ -58,7 +58,7 @@ export async function GET(request: NextRequest) {
           brand: 'asc',
         },
         {
-          name: 'asc',
+          model: 'asc',
         },
       ],
     });
@@ -70,7 +70,6 @@ export async function GET(request: NextRequest) {
       const searchLower = search.toLowerCase();
       filteredProducts = filteredProducts.filter(
         (p) =>
-          p.name.toLowerCase().includes(searchLower) ||
           p.brand.toLowerCase().includes(searchLower) ||
           p.model.toLowerCase().includes(searchLower)
       );
