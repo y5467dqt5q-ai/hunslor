@@ -5,6 +5,8 @@ import path from 'path';
 import fs from 'fs';
 import type { Dirent } from 'fs';
 
+export const dynamic = 'force-dynamic';
+
 // Получаем путь к папке images
 const getImagesPath = () => {
   if (process.env.IMAGES_PATH) {

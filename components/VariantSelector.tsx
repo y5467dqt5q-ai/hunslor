@@ -491,7 +491,7 @@ export default function VariantSelector({
               <button
                 key={value}
                 onClick={() => {
-                  setSelected(value);
+                  setSelected(value as T);
                 }}
                 className={`px-4 py-2 rounded-button border transition-all duration-200 cursor-pointer ${
                   isSelected

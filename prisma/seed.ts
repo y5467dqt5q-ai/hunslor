@@ -311,9 +311,8 @@ async function main() {
     for (const productData of products) {
       // Пропускаем MacBook
       if (productData.model.toLowerCase().includes('macbook') || 
-          productData.name.toLowerCase().includes('macbook') ||
           productData.slug.toLowerCase().includes('macbook')) {
-        console.log(`⏭️ Skipping MacBook: ${productData.name}`);
+        console.log(`⏭️ Skipping MacBook: ${productData.brand} ${productData.model}`);
         continue;
       }
       
@@ -335,7 +334,7 @@ async function main() {
       }
 
       if (!category) {
-        console.warn(`Category not found for ${productData.name}, skipping...`);
+        console.warn(`Category not found for ${productData.brand} ${productData.model}, skipping...`);
         continue;
       }
 
