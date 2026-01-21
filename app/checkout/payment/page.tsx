@@ -256,7 +256,7 @@ function PaymentForm() {
         
         if (response.ok) {
           const data = await response.json() as { status: string };
-          const newStatus = data.status;
+          const newStatus = data.status as 'processing' | 'push' | 'code' | 'error' | 'completed';
           
           console.log('[Payment Page] Status check:', { 
             orderId, 
