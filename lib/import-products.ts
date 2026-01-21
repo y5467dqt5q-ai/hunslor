@@ -618,7 +618,7 @@ export function importProductsFromFolder(): ProductImportData[] {
         brand,
         model,
         categorySlug,
-        basePrice: Math.round(determineBasePrice(brand, model, categorySlug) * 0.85),
+        basePrice: Math.round(determineBasePrice(brand, model, categorySlug)),
         discount: 0,
         variants,
       });

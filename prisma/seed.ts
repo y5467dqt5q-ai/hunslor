@@ -390,6 +390,9 @@ async function main() {
                  if (variantData.images && variantData.images.length > 0) {
                     // Используем уже найденные изображения
                     imageData.images = variantData.images;
+                    if (variantData.variantPath) {
+                        imageData.variantPath = variantData.variantPath;
+                    }
                  } else {
                      // Fallback logic if no images found (should not happen with new import logic)
                      if (variantData.variantPath) {
