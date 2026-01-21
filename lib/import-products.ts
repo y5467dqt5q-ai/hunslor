@@ -385,7 +385,6 @@ export function importProductsFromFolder(): ProductImportData[] {
       products.push({
         slug,
         folderName: firstFolder, // Используем первую папку как пример для поиска изображений
-        name: baseProductName,
         brand: 'Apple',
         model: baseProductName.replace('Apple ', ''),
         categorySlug: 'iphone',
