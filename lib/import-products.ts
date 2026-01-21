@@ -454,7 +454,7 @@ export function importProductsFromFolder(): ProductImportData[] {
       products.push({
         slug: folderName.toLowerCase().replace(/[^a-z0-9-]/g, '-'),
         folderName: folderName,
-        name: `${brand} ${model}`,
+        // name: `${brand} ${model}`, // Removed 'name' field as it doesn't exist in Prisma schema
         brand,
         model,
         categorySlug,
