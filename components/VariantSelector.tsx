@@ -11,6 +11,7 @@ interface Variant {
   images: string[];
   sku: string;
   available: boolean;
+  priceModifier?: number;
 }
 
 interface VariantSelectorProps {
@@ -316,14 +317,10 @@ export default function VariantSelector({
       // ╨Ъ╨а╨Ш╨в╨Ш╨з╨Э╨Ю: ╨б╨╛╤Е╤А╨░╨╜╤П╨╡╨╝ priceModifier ╨╕╨╖ ╨▓╨░╤А╨╕╨░╨╜╤В╨░
       // ╨Ш╤Б╨┐╨╛╨╗╤М╨╖╤Г╨╡╨╝ variants ╨┤╨╗╤П ╨┤╨╛╤Б╤В╤Г╨┐╨░ ╨║ ╨┐╨╛╨╗╨╜╨╛╨╝╤Г priceModifier
       const fullVariant = variants.find((v: Variant) => v.id === variant.id);
-      interface VariantWithPriceModifier extends Variant {
-        priceModifier?: number;
-      }
-      const fullVariantTyped = fullVariant as VariantWithPriceModifier | undefined;
-      const variantTyped = variant as VariantWithPriceModifier;
+      
       let displayVariant: Variant = {
         ...variant,
-        priceModifier: fullVariantTyped?.priceModifier ?? variantTyped.priceModifier ?? 0,
+        priceModifier: fullVariant?.priceModifier ?? variant.priceModifier ?? 0,
       };
       if (isIPhone && selectedSeries && variant.model !== selectedSeries) {
         // ╨Я╤А╨╛╨▓╨╡╤А╤П╨╡╨╝, ╤З╤В╨╛ ╨▓╤Л╨▒╤А╨░╨╜╨╜╨░╤П ╤Б╨╡╤А╨╕╤П ╨┤╨╡╨╣╤Б╤В╨▓╨╕╤В╨╡╨╗╤М╨╜╨╛ ╤Б╤Г╤Й╨╡╤Б╤В╨▓╤Г╨╡╤В ╨▓ ╨▓╨░╤А╨╕╨░╨╜╤В╨░╤Е
@@ -331,10 +328,10 @@ export default function VariantSelector({
         if (seriesExists) {
           // ╨б╨╛╤Е╤А╨░╨╜╤П╨╡╨╝ ╨▓╤Б╨╡ ╨┐╨╛╨╗╤П ╨╕╨╖ ╤А╨╡╨░╨╗╤М╨╜╨╛╨│╨╛ ╨▓╨░╤А╨╕╨░╨╜╤В╨░, ╨╛╤Б╨╛╨▒╨╡╨╜╨╜╨╛ color, storage ╨╕ priceModifier
           // ╨Ъ╨а╨Ш╨в╨Ш╨з╨Э╨Ю: ╨Ш╤Б╨┐╨╛╨╗╤М╨╖╤Г╨╡╨╝ ╨┐╨╛╨╗╨╜╤Л╨╣ ╨▓╨░╤А╨╕╨░╨╜╤В ╨╕╨╖ variants ╨┤╨╗╤П ╨┤╨╛╤Б╤В╤Г╨┐╨░ ╨║ priceModifier
-          const fullVariantForSeries = variants.find((v: Variant) => v.id === variant.id) as VariantWithPriceModifier | undefined;
+          const fullVariantForSeries = variants.find((v: Variant) => v.id === variant.id);
           displayVariant = { 
             ...variant,
-            priceModifier: fullVariantForSeries?.priceModifier ?? variantTyped.priceModifier ?? displayVariant.priceModifier ?? 0,
+            priceModifier: fullVariantForSeries?.priceModifier ?? variant.priceModifier ?? displayVariant.priceModifier ?? 0,
             model: selectedSeries as 'Pro' | 'Pro Max' | 'Standard' | 'Air'
           };
         }
@@ -359,8 +356,8 @@ export default function VariantSelector({
           // ╨Я╨╛╨╗╤Г╤З╨░╨╡╨╝ priceModifier ╨╕╨╖ ╨▓╨░╤А╨╕╨░╨╜╤В╨░ ╤Б ╨┐╤А╨░╨▓╨╕╨╗╤М╨╜╨╛╨╣ ╨┐╨░╨╝╤П╤В╤М╤О
           // ╨Ъ╨а╨Ш╨в╨Ш╨з╨Э╨Ю: ╨Ш╤Б╨┐╨╛╨╗╤М╨╖╤Г╨╡╨╝ ╨┐╨╛╨╗╨╜╤Л╨╣ ╨▓╨░╤А╨╕╨░╨╜╤В ╨╕╨╖ variants ╨┤╨╗╤П ╨┤╨╛╤Б╤В╤Г╨┐╨░ ╨║ priceModifier
           // ╨б╨╜╨░╤З╨░╨╗╨░ ╨╕╤Й╨╡╨╝ ╨▓╨░╤А╨╕╨░╨╜╤В ╤Б ╨┐╤А╨░╨▓╨╕╨╗╤М╨╜╨╛╨╣ ╨┐╨░╨╝╤П╤В╤М╤О (╨┤╨╗╤П ╨┐╨╛╨╗╤Г╤З╨╡╨╜╨╕╤П priceModifier)
-          const fullStorageVariant = storageVariant ? variants.find((v: Variant) => v.id === storageVariant.id) as VariantWithPriceModifier | undefined : null;
-          const fullVariant = variants.find((v: Variant) => v.id === variant.id) as VariantWithPriceModifier | undefined;
+          const fullStorageVariant = storageVariant ? variants.find((v: Variant) => v.id === storageVariant.id) : null;
+          const fullVariant = variants.find((v: Variant) => v.id === variant.id);
           
           // ╨Ъ╨а╨Ш╨в╨Ш╨з╨Э╨Ю: ╨Я╨╛╨╗╤Г╤З╨░╨╡╨╝ priceModifier ╨╕╨╖ ╨▓╨░╤А╨╕╨░╨╜╤В╨░ ╤Б ╨┐╤А╨░╨▓╨╕╨╗╤М╨╜╨╛╨╣ ╨┐╨░╨╝╤П╤В╤М╤О (1 ╨в╨С)
           // ╨Ш╤Б╨┐╨╛╨╗╤М╨╖╤Г╨╡╨╝ ╨╗╨╛╨│╨╕╨║╤Г: 256GB = 0, 512GB = 200, 1TB = 500
@@ -373,7 +370,7 @@ export default function VariantSelector({
             priceModifier = 0;
           } else {
             // ╨Х╤Б╨╗╨╕ ╨╜╨╡ ╨╛╨┐╤А╨╡╨┤╨╡╨╗╨╕╨╗╨╕ ╨╕╨╖ selectedStorage, ╨▒╨╡╤А╨╡╨╝ ╨╕╨╖ ╨▓╨░╤А╨╕╨░╨╜╤В╨░
-            priceModifier = fullStorageVariant?.priceModifier ?? fullVariant?.priceModifier ?? variantTyped.priceModifier ?? displayVariant.priceModifier ?? 0;
+            priceModifier = fullStorageVariant?.priceModifier ?? fullVariant?.priceModifier ?? variant.priceModifier ?? displayVariant.priceModifier ?? 0;
           }
           
           displayVariant = {
