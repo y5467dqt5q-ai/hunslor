@@ -473,11 +473,11 @@ export default function VariantSelector({
     return true;
   };
 
-  const renderSelector = (
+  const renderSelector = <T extends string>(
     label: string,
-    values: string[],
-    selected: string | null,
-    setSelected: (value: any) => void,
+    values: T[],
+    selected: T | null,
+    setSelected: (value: T | null) => void,
     type: 'series' | 'color' | 'storage'
   ) => {
     if (values.length === 0) return null;

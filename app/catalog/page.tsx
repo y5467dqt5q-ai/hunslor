@@ -3,8 +3,15 @@ import { prisma } from '@/lib/prisma';
 import CatalogClient from '@/components/CatalogClient';
 import ProductFilters from '@/components/ProductFilters';
 
+interface FilterCategory {
+  id: string;
+  name: string;
+  slug: string;
+  order: number;
+}
+
 async function getFilterOptions(): Promise<{
-  categories: any[];
+  categories: FilterCategory[];
   brands: string[];
   colors: string[];
   memories: string[];
