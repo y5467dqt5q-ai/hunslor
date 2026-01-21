@@ -453,13 +453,13 @@ export function importProductsFromFolder(): ProductImportData[] {
 
     if (baseProductName.includes('Pro Max')) {
       modelType = 'Pro Max';
-      basePrice = 1449; // 256GB base
+      basePrice = Math.round(1449 * 0.85); // 256GB base
     } else if (baseProductName.includes('Pro')) {
       modelType = 'Pro';
-      basePrice = 1199; // 128GB base
+      basePrice = Math.round(1199 * 0.85); // 128GB base
     } else if (baseProductName.includes('Air')) {
       modelType = 'Air';
-      basePrice = 1099; // Estimate
+      basePrice = Math.round(1099 * 0.85); // Estimate
     }
     
     // Создаем slug из базового имени
@@ -493,14 +493,14 @@ export function importProductsFromFolder(): ProductImportData[] {
         
         if (modelType === 'Pro Max') {
             // Base 256GB
-            if (mem.includes('512gb')) priceModifier = 200;
-            if (mem.includes('1tb')) priceModifier = 400;
+            if (mem.includes('512gb')) priceModifier = Math.round(200 * 0.85);
+            if (mem.includes('1tb')) priceModifier = Math.round(400 * 0.85);
             // 256GB is 0
         } else {
             // Base 128GB
-            if (mem.includes('256gb')) priceModifier = 130;
-            if (mem.includes('512gb')) priceModifier = 330;
-            if (mem.includes('1tb')) priceModifier = 530;
+            if (mem.includes('256gb')) priceModifier = Math.round(130 * 0.85);
+            if (mem.includes('512gb')) priceModifier = Math.round(330 * 0.85);
+            if (mem.includes('1tb')) priceModifier = Math.round(530 * 0.85);
         }
 
         variants.push({
@@ -523,7 +523,7 @@ export function importProductsFromFolder(): ProductImportData[] {
         brand: 'Apple',
         model: baseProductName.replace('Apple ', ''),
         categorySlug: 'iphone',
-        basePrice,
+        basePrice, // Already reduced
         discount: 0, // No discount by default
         variants,
       });
@@ -555,52 +555,51 @@ export function importProductsFromFolder(): ProductImportData[] {
       for (const variantFolder of variantFolders) {
         const variantInfo = parseVariantName(variantFolder);
         const variantPath = path.join(productFolder, variantFolder);
-        const images = getImagesFromFolder(variantPath);
+        const images = getImagesFromFolder(variantPath).map(img => `${folderName}/${variantFolder}/${img}`);
         
-        // Генерируем SKU
-        const rawSku = `${folderName}-${variantFolder}`.toUpperCase().replace(/[^A-Z0-9]/g, '-');
-        const sku = getUniqueSku(rawSku);
-
-        const priceModifier = calculatePriceModifier(variantInfo.storage, variantInfo.memory);
-        
-        variants.push({
-          ...variantInfo,
-          priceModifier,
-          stock: 10,
-          sku,
-          variantPath: variantFolder,
-          images: images, // Сохраняем найденные изображения
-        });
+        if (images.length > 0) {
+          // Generate SKU
+          const shortSlug = folderName.replace(/[^a-zA-Z0-9]/g, '').slice(0, 10).toUpperCase();
+          const colorCode = (variantInfo.color || 'STD').slice(0, 3).toUpperCase();
+          const memCode = (variantInfo.memory || 'STD').slice(0, 3).toUpperCase();
+          const sku = getUniqueSku(`${shortSlug}-${colorCode}-${memCode}`);
+          
+          variants.push({
+            color: variantInfo.color,
+            memory: variantInfo.memory,
+            storage: variantInfo.storage,
+            priceModifier: Math.round(calculatePriceModifier(variantInfo.storage, variantInfo.memory) * 0.85),
+            stock: 10,
+            sku,
+            variantPath: `${folderName}/${variantFolder}`,
+            images,
+          });
+        }
       }
     } else {
-      // Если нет подпапок, создаем один вариант по умолчанию
-      const images = getImagesFromFolder(productFolder);
-      if (images.length > 0) {
-        const rawSku = folderName.toUpperCase().replace(/[^A-Z0-9]/g, '-');
-        const sku = getUniqueSku(rawSku);
-
-        variants.push({
-          priceModifier: 0,
-          stock: 10,
-          sku,
-          variantPath: '',
-          images: images, // Сохраняем найденные изображения
-        });
-      }
+        // Если подпапок нет, ищем изображения в самой папке (без вариантов)
+        const images = getImagesFromFolder(productFolder).map(img => `${folderName}/${img}`);
+        if (images.length > 0) {
+             const sku = getUniqueSku(folderName.replace(/[^a-zA-Z0-9]/g, '').slice(0, 10).toUpperCase());
+             variants.push({
+                 priceModifier: 0,
+                 stock: 10,
+                 sku,
+                 variantPath: folderName,
+                 images,
+             });
+        }
     }
 
     if (variants.length > 0) {
-      // Определяем базовую цену
-      const basePrice = determineBasePrice(brand, model, categorySlug);
-
       products.push({
-        slug: folderName.toLowerCase().replace(/[^a-z0-9-]/g, '-'),
-        folderName: folderName,
+        slug: folderName.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, ''),
+        folderName,
         brand,
         model,
         categorySlug,
-        basePrice,
-        discount: 20,
+        basePrice: Math.round(determineBasePrice(brand, model, categorySlug) * 0.85),
+        discount: 0,
         variants,
       });
     }

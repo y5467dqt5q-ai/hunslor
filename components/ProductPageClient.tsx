@@ -85,14 +85,19 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
       setIsLoadingImages(true);
       
       try {
-        let imageUrl = `/api/images?sku=${selectedVariant.sku}`;
+        let imageUrl = `/api/products/images?product=${product.slug}`;
         
-        // Если цвет или память были изменены (виртуальный вариант), передаем их в API
-        if (selectedVariant.color) {
-          imageUrl += `&color=${encodeURIComponent(selectedVariant.color)}`;
-        }
-        if (selectedVariant.storage) {
-          imageUrl += `&storage=${encodeURIComponent(selectedVariant.storage)}`;
+        // Если у варианта есть ID, используем его
+        if (selectedVariant.id) {
+          imageUrl += `&variant=${selectedVariant.id}`;
+        } else {
+          // Если ID нет (виртуальный вариант), передаем параметры
+          if (selectedVariant.color) {
+            imageUrl += `&color=${encodeURIComponent(selectedVariant.color)}`;
+          }
+          if (selectedVariant.storage) {
+            imageUrl += `&storage=${encodeURIComponent(selectedVariant.storage)}`;
+          }
         }
         
         const response = await fetch(imageUrl);

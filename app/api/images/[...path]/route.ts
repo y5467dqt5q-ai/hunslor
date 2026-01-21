@@ -18,7 +18,13 @@ const getImagesPath = () => {
   }
 
   // Используем папку pictr на рабочем столе пользователя (только для локальной разработки)
-  return 'C:\\Users\\Вітання!\\Desktop\\pictr';
+  const localPath = 'C:\\Users\\Вітання!\\Desktop\\pictr';
+  if (fs.existsSync(localPath)) {
+    return localPath;
+  }
+
+  // Fallback to public/images if local path doesn't exist
+  return path.join(process.cwd(), 'public', 'images');
 };
 
 // Путь к папкам iPhone 17 и 17 Air (если они не в pictr)
