@@ -16,62 +16,130 @@ export async function GET() {
   };
 
   try {
-    log('🚀 Starting Debug Seed...');
+    log('🚀 Starting Debug Seed & Fix...');
     log(`Environment: ${process.env.NODE_ENV}`);
-    log(`CWD: ${process.cwd()}`);
     
-    // Check public/images
-    const publicImagesPath = path.join(process.cwd(), 'public', 'images');
-    log(`Checking images path: ${publicImagesPath}`);
-    
-    if (fs.existsSync(publicImagesPath)) {
-      log('✅ Images folder exists!');
-      const files = fs.readdirSync(publicImagesPath);
-      log(`Found ${files.length} files/folders:`);
-      log(files.slice(0, 10).join(', ') + (files.length > 10 ? '...' : ''));
-    } else {
-      log('❌ Images folder NOT found!');
-      // List root contents
-      log('Root directory contents:');
-      log(fs.readdirSync(process.cwd()).join(', '));
-      
-      // Check if public exists
-      const publicPath = path.join(process.cwd(), 'public');
-      if (fs.existsSync(publicPath)) {
-        log('Public folder exists, contents:');
-        log(fs.readdirSync(publicPath).join(', '));
-      } else {
-        log('❌ Public folder NOT found!');
-      }
-    }
+    // 1. Ensure Categories Exist
+    log('Checking categories...');
+    const categoryCount = await prisma.category.count();
+    log(`Current category count: ${categoryCount}`);
 
-    // Try importing products
+    // 2. Import Products
     log('📦 Importing products from folder...');
     const products = importProductsFromFolder();
     log(`Found ${products.length} products to import`);
 
-    if (products.length > 0) {
-      log(`First product: ${JSON.stringify(products[0].slug)}`);
-    } else {
-      log('⚠️ No products found via import script.');
+    let successCount = 0;
+    let errorCount = 0;
+
+    // 3. Insert into DB (Force Seed)
+    log('⚡ STARTING DATABASE INSERTION...');
+    
+    for (const productData of products) {
+        try {
+            // Find category
+            let category = await prisma.category.findFirst({
+                where: {
+                    OR: [
+                        { slug: productData.categorySlug },
+                        { children: { some: { slug: productData.categorySlug } } },
+                    ],
+                },
+            });
+
+            if (!category) {
+                // Fallback to first available
+                 category = await prisma.category.findFirst({
+                    where: { parentId: null },
+                });
+            }
+
+            if (!category) {
+                log(`❌ SKIP: No category for ${productData.slug}`);
+                continue;
+            }
+
+            // Upsert Product
+             const product = await prisma.product.upsert({
+                where: { slug: productData.slug },
+                update: {
+                    brand: productData.brand,
+                    model: productData.model,
+                    basePrice: productData.basePrice,
+                    discount: productData.discount,
+                    folderName: productData.folderName || null,
+                    categoryId: category.id,
+                },
+                create: {
+                    slug: productData.slug,
+                    folderName: productData.folderName || null,
+                    brand: productData.brand,
+                    model: productData.model,
+                    categoryId: category.id,
+                    baseDescription: `Premium ${productData.brand} ${productData.model}`,
+                    baseImages: JSON.stringify([]),
+                    basePrice: productData.basePrice,
+                    discount: productData.discount,
+                },
+            });
+
+            // Delete old variants
+            await prisma.productVariant.deleteMany({
+                where: { productId: product.id },
+            });
+
+            // Create variants
+            for (const variantData of productData.variants) {
+                 const images: string[] = [];
+                 const imageData: { images: string[]; variantPath?: string } = { images: [] };
+
+                 if (variantData.variantPath) {
+                    if (variantData.variantPath.includes('Apple iPhone 17')) {
+                        imageData.variantPath = variantData.variantPath;
+                        images.push(`${variantData.variantPath}/01-main.webp`);
+                    } else {
+                        images.push(`${productData.slug}/${variantData.variantPath}/01-main.webp`);
+                    }
+                 } else {
+                    images.push(`${productData.slug}/01-main.webp`);
+                 }
+                 imageData.images = images;
+
+                 await prisma.productVariant.create({
+                    data: {
+                        productId: product.id,
+                        color: variantData.color || null,
+                        memory: variantData.memory || null,
+                        size: variantData.size || null,
+                        ram: variantData.ram || null,
+                        storage: variantData.storage || null,
+                        priceModifier: variantData.priceModifier,
+                        images: JSON.stringify(imageData),
+                        stock: variantData.stock,
+                        inStock: variantData.stock > 0,
+                        sku: variantData.sku,
+                    }
+                 });
+            }
+            successCount++;
+        } catch (err: any) {
+            errorCount++;
+            log(`❌ ERROR on ${productData.slug}: ${err.message}`);
+        }
     }
 
-    // Check DB connection
-    log('🔌 Checking DB connection...');
-    const categoryCount = await prisma.category.count();
-    log(`Current category count: ${categoryCount}`);
-    const productCount = await prisma.product.count();
-    log(`Current product count: ${productCount}`);
+    log(`🏁 Finished! Success: ${successCount}, Errors: ${errorCount}`);
+    
+    const finalCount = await prisma.product.count();
 
     return NextResponse.json({ 
       success: true, 
       logs,
-      stats: { categories: categoryCount, products: productCount } 
+      stats: { productsFound: products.length, productsInDB: finalCount, errors: errorCount } 
     });
 
   } catch (error: any) {
-    log(`❌ Error: ${error.message}`);
-    log(error.stack);
+    log(`❌ Fatal Error: ${error.message}`);
     return NextResponse.json({ success: false, logs, error: error.message }, { status: 500 });
   } finally {
     await prisma.$disconnect();
