@@ -15,7 +15,6 @@ const IMAGES_BASE_PATH = getImagesPath();
 export interface ProductImportData {
   slug: string;
   folderName: string; // Оригинальное имя папки для поиска изображений
-  name: string;
   brand: string;
   model: string;
   categorySlug: string;

@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { setOrderStatus } from '@/lib/order-status';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * Тестовый endpoint для проверки работы кнопок
  * Использование: POST /api/telegram/test-callback?action=push&orderId=order_123456
