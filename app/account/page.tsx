@@ -23,6 +23,19 @@ interface Order {
   }[];
 }
 
+interface UserProfile {
+  name?: string;
+  email?: string;
+  phone?: string;
+  address?: {
+    street?: string;
+    city?: string;
+    postalCode?: string;
+    country?: string;
+  };
+  dateOfBirth?: string;
+}
+
 export default function AccountPage() {
   const { user, token, logout } = useAuthStore();
   const router = useRouter();
