@@ -483,7 +483,7 @@ export default function VariantSelector({
       <div>
         <label className="block text-sm font-medium mb-2">{label}</label>
         <div className="flex flex-wrap gap-2">
-          {values.map((value: string) => {
+          {values.map((value) => {
             const isAvailable = isValueAvailable(type, value);
             const isSelected = selected === value;
 
