@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import jwt from 'jsonwebtoken';
 
+export const dynamic = 'force-dynamic';
+
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
 
 function getUserId(request: NextRequest): string | null {
@@ -22,7 +24,7 @@ function getUserId(request: NextRequest): string | null {
 // Обновление статуса заказа в базе данных
 export async function POST(
   request: NextRequest,
-  { params }: { params: Promise<{ orderId: string }> }
+  { params }: { params: { orderId: string } }
 ) {
   try {
     const userId = getUserId(request);
@@ -33,7 +35,7 @@ export async function POST(
       );
     }
 
-    const { orderId } = await params;
+    const { orderId } = params;
     const body = await request.json();
     const { status } = body;
 

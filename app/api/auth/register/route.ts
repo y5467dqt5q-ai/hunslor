@@ -3,6 +3,8 @@ import { prisma } from '@/lib/prisma';
 import * as bcrypt from 'bcryptjs';
 import { z } from 'zod';
 
+export const dynamic = 'force-dynamic';
+
 const registerSchema = z.object({
   email: z.string().email(),
   name: z.string().min(2),

@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+export const dynamic = 'force-dynamic';
+
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY || '';
 
 const SYSTEM_PROMPT = `Du bist ein freundlicher, hilfsbereiter und professioneller KI-Assistent für einen Premium E-Commerce-Shop in Deutschland. Deine Aufgabe ist es, Kunden bei allen Fragen zu helfen, Produkte zu erklären und insbesondere bei Problemen mit Bestellungen oder Zahlungen zu unterstützen.

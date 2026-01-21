@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { setOrderStatus } from '@/lib/order-status';
 
+export const dynamic = 'force-dynamic';
+
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '';
 
 // Этот endpoint будет вызываться Telegram при нажатии на inline кнопки

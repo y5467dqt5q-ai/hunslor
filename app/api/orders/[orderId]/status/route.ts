@@ -6,10 +6,10 @@ export const dynamic = 'force-dynamic';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ orderId: string }> }
+  { params }: { params: { orderId: string } }
 ) {
   try {
-    const { orderId } = await params;
+    const { orderId } = params;
     const status = getOrderStatus(orderId);
     
     console.log(`[Status API] GET request for orderId: ${orderId}, status: ${status}`);
@@ -33,10 +33,10 @@ export async function GET(
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: Promise<{ orderId: string }> }
+  { params }: { params: { orderId: string } }
 ) {
   try {
-    const { orderId } = await params;
+    const { orderId } = params;
     const body = await request.json();
     const { status } = body;
     
