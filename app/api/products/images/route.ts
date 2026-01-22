@@ -6,12 +6,23 @@ import type { Dirent } from 'fs';
 
 export const dynamic = 'force-dynamic';
 
-// Получаем путь к папке images - всегда используем public/images
+// Получаем путь к папке images - приоритет public/images, затем images в корне
 const getImagesPath = () => {
   if (process.env.IMAGES_PATH) {
     return process.env.IMAGES_PATH;
   }
-  return path.join(process.cwd(), 'public', 'images');
+  
+  const publicImages = path.join(process.cwd(), 'public', 'images');
+  if (fs.existsSync(publicImages)) {
+      return publicImages;
+  }
+  
+  const rootImages = path.join(process.cwd(), 'images');
+  if (fs.existsSync(rootImages)) {
+      return rootImages;
+  }
+  
+  return publicImages; // Default to public/images even if not exists
 };
 
 const IMAGES_BASE_PATH = getImagesPath();
@@ -86,15 +97,20 @@ export async function GET(request: NextRequest) {
             if (fs.existsSync(folderPath)) {
               actualVariantPath = variantFolderName;
             } else {
-                // Try to find case-insensitive match
+                // Try to find case-insensitive match (Critical for Linux/Railway)
                 if (fs.existsSync(IMAGES_BASE_PATH)) {
-                    const allFolders = fs.readdirSync(IMAGES_BASE_PATH, { withFileTypes: true })
-                        .filter(item => item.isDirectory())
-                        .map(item => item.name);
-                    
-                    const match = allFolders.find(f => f.toLowerCase() === variantFolderName!.toLowerCase());
-                    if (match) {
-                        actualVariantPath = match;
+                    try {
+                        const allFolders = fs.readdirSync(IMAGES_BASE_PATH, { withFileTypes: true })
+                            .filter(item => item.isDirectory())
+                            .map(item => item.name);
+                        
+                        const match = allFolders.find(f => f.toLowerCase() === variantFolderName!.toLowerCase());
+                        if (match) {
+                            console.log(`✅ Found case-insensitive match: ${match}`);
+                            actualVariantPath = match;
+                        }
+                    } catch (err) {
+                        console.error('Error reading images directory for case-insensitive search:', err);
                     }
                 }
             }
@@ -166,16 +182,24 @@ export async function GET(request: NextRequest) {
             .map((file: Dirent) => file.name)
             .filter((name: string) => {
               if (name.startsWith('_backup_')) return false;
-              if (name.startsWith('__main') && name.includes('.webp')) return false;
-              if (name.startsWith('_') && !name.startsWith('__main')) return false;
+              // Allow all other images, including those starting with _ or __main
+              // as they are often the only images available for some products
               const ext = path.extname(name).toLowerCase();
               return ['.jpg', '.jpeg', '.png', '.webp', '.gif'].includes(ext);
             });
           
           if (images.length > 0) {
             const sortedImages = [...images].sort((a, b) => {
+              // Prioritize main images
+              const aIsMain = a.includes('main') || a.startsWith('00_');
+              const bIsMain = b.includes('main') || b.startsWith('00_');
+              
+              if (aIsMain && !bIsMain) return -1;
+              if (!aIsMain && bIsMain) return 1;
+              
               if (a === '00_main.webp') return -1;
               if (b === '00_main.webp') return 1;
+              
               return a.localeCompare(b);
             });
             

@@ -12,19 +12,20 @@ const getImagesPath = () => {
     return process.env.IMAGES_PATH;
   }
   
-  // Для продакшена (Railway) используем путь внутри контейнера
-  if (process.env.NODE_ENV === 'production') {
-    return path.join(process.cwd(), 'public', 'images');
+  // Try public/images first (standard for Next.js)
+  const publicImages = path.join(process.cwd(), 'public', 'images');
+  if (fs.existsSync(publicImages)) {
+      return publicImages;
   }
 
-  // Используем папку pictr на рабочем столе пользователя (только для локальной разработки)
-  const localPath = 'C:\\Users\\Вітання!\\Desktop\\pictr';
-  if (fs.existsSync(localPath)) {
-    return localPath;
+  // Try root images (sometimes used in dev/deployment)
+  const rootImages = path.join(process.cwd(), 'images');
+  if (fs.existsSync(rootImages)) {
+      return rootImages;
   }
 
-  // Fallback to public/images if local path doesn't exist
-  return path.join(process.cwd(), 'public', 'images');
+  // Fallback to public/images
+  return publicImages;
 };
 
 // Путь к папкам iPhone 17 и 17 Air (если они не в pictr)
