@@ -60,9 +60,29 @@ function parseProductName(folderName: string): { brand: string; model: string } 
     'ipad': 'Apple',
     'watch': 'Apple',
     'airpods': 'Apple',
+    'macbook': 'Apple',
+    'mac': 'Apple',
     'dyson': 'Dyson',
     'ray-ban': 'Ray-Ban',
     'meta': 'Meta',
+    'oculus': 'Meta',
+    'quest': 'Meta',
+    'google': 'Google',
+    'pixel': 'Google',
+    'samsung': 'Samsung',
+    'galaxy': 'Samsung',
+    'garmin': 'Garmin',
+    'sony': 'Sony',
+    'playstation': 'Sony',
+    'ps5': 'Sony',
+    'nintendo': 'Nintendo',
+    'switch': 'Nintendo',
+    'xbox': 'Microsoft',
+    'lg': 'LG',
+    'canon': 'Canon',
+    'nikon': 'Nikon',
+    'dji': 'DJI',
+    'gopro': 'GoPro',
   };
 
   const lowerName = folderName.toLowerCase();
@@ -130,8 +150,28 @@ function parseProductName(folderName: string): { brand: string; model: string } 
     // Экранируем спецсимволы для RegExp
     const escapedBrand = brand.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     model = model.replace(new RegExp(escapedBrand, 'gi'), '').trim();
-    model = model.replace(/^[-_]+|[-_]+$/g, ''); // Убираем дефисы в начале/конце
   }
+
+  // Также убираем альтернативные названия брендов
+  if (brand === 'Google' && model.toLowerCase().includes('pixel')) {
+    // Keep Pixel in the model name as it is the sub-brand
+  } else if (brand === 'Samsung' && model.toLowerCase().includes('galaxy')) {
+    // Keep Galaxy
+  } else if (brand === 'Sony' && (model.toLowerCase().includes('playstation') || model.toLowerCase().includes('ps5'))) {
+    // Keep PlayStation/PS5
+  }
+
+  // Очистка от характеристик, которые пойдут в варианты
+  // Убираем цвета в скобках: (Black), (Lemongrass)
+  model = model.replace(/\s*\([^)]+\)/g, '');
+  
+  // Убираем память: 128GB, 256GB, 512GB, 1TB
+  model = model.replace(/\s+\d+\s*(GB|TB)/gi, '');
+  
+  // Убираем RAM если указана как "12" или "12GB" отдельно (сложнее, аккуратно)
+  // model = model.replace(/\s+\d+\s*GB\s+RAM/gi, '');
+
+  model = model.replace(/^[-_]+|[-_]+$/g, '').trim(); // Убираем дефисы в начале/конце и пробелы
 
   return { brand, model: model || folderName };
 }
@@ -489,6 +529,21 @@ function determineBasePrice(brand: string, model: string, category: string): num
           
           return 449; // A-series or older
       }
+
+      // Google Pixel
+      if (brand.toLowerCase().includes('google') || lowerModel.includes('pixel')) {
+          if (lowerModel.includes('9') && lowerModel.includes('pro') && lowerModel.includes('xl')) return 1079; // 1199 * 0.9
+          if (lowerModel.includes('9') && lowerModel.includes('pro')) return 989; // 1099 * 0.9
+          if (lowerModel.includes('9') && !lowerModel.includes('pro')) return 809; // 899 * 0.9
+          if (lowerModel.includes('8a')) return 494; // 549 * 0.9
+          if (lowerModel.includes('8') && lowerModel.includes('pro')) return 899; // 999 * 0.9
+          if (lowerModel.includes('8') && !lowerModel.includes('pro')) return 629; // 699 * 0.9
+          
+          // Fallback for "Pixel 10" or unknown
+          if (lowerModel.includes('pro')) return 1079;
+          return 809;
+      }
+
       return 449;
   }
 

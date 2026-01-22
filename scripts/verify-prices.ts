@@ -28,7 +28,9 @@ try {
         const isTarget = targetProducts.some(t => product.folderName.includes(t) || product.model.includes(t) || product.brand.includes(t));
         
         if (isTarget) {
-            console.log(`Product: ${product.folderName}`);
+            console.log(`Folder: ${product.folderName}`);
+            console.log(`Brand: '${product.brand}'`);
+            console.log(`Model: '${product.model}'`);
             console.log(`- Base Price: ${product.basePrice} EUR`);
             console.log(`- Category: ${product.categorySlug}`);
             
